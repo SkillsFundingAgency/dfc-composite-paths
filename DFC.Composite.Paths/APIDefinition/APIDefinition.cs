@@ -10,21 +10,21 @@ namespace DFC.Composite.Paths.APIDefinition
 {
     public static class APIDefinition
     {
-        public const string APITitle = "Composite Paths";
-        public const string APIDefinitionName = "API-Definition";
-        public const string APIDefRoute = APITitle + "/" + APIDefinitionName;
-        public const string APIDescription = "Basic details of a National Careers Service " + APITitle + " Resource";
+        private const string ApiTitle = "Composite Paths";
+        private const string ApiDefinitionName = "API-Definition";
+        private const string ApiDefinitionRoute = ApiTitle + "/" + ApiDefinitionName;
+        private const string ApiDefinitionDescription = "Basic details of a National Careers Service " + ApiTitle + " Resource";
         private const string ApiVersion = "1.0.0";
 
-        [FunctionName(APIDefinitionName)]
+        [FunctionName(ApiDefinitionName)]
         public static IActionResult Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = ApiDefinitionRoute)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             var swaggerDocGenerator = new SwaggerDocumentGenerator();
-            var swaggerResponse = swaggerDocGenerator.GenerateSwaggerDocument(req, APITitle, APIDescription, APIDefinitionName, ApiVersion, Assembly.GetExecutingAssembly());
+            var swaggerResponse = swaggerDocGenerator.GenerateSwaggerDocument(req, ApiTitle, ApiDefinitionDescription, ApiDefinitionName, ApiVersion, Assembly.GetExecutingAssembly());
 
             return new OkObjectResult(swaggerResponse);
         }
