@@ -14,7 +14,7 @@ namespace DFC.Composite.Paths.Common
         SidebarLeft3
     }
 
-    public enum Region
+    public enum PageRegion
     {
         Head = 1,
         Breadcrumb = 2,
