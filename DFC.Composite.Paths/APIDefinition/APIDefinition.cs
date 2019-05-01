@@ -14,7 +14,7 @@ namespace DFC.Composite.Paths.APIDefinition
         private const string ApiDefinitionName = "API-Definition";
         private const string ApiDefinitionRoute = ApiTitle + "/" + ApiDefinitionName;
         private const string ApiDefinitionDescription = "Basic details of a National Careers Service " + ApiTitle + " Resource";
-        private const string ApiVersion = "1.0.0";
+        private const string ApiVersion = "0.1.0";
 
         [FunctionName(ApiDefinitionName)]
         public static IActionResult Run(
