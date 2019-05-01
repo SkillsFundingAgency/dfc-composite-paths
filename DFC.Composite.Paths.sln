@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.572
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.Composite.Paths", "DFC.Composite.Paths\DFC.Composite.Paths.csproj", "{BAC79173-4DA9-4D59-9487-1AAD0E4F0815}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.Composite.Paths.Tests", "DFC.Composite.Paths.Tests\DFC.Composite.Paths.Tests.csproj", "{31C7FB1B-7797-4E00-BD2F-83458C58E8D6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BAC79173-4DA9-4D59-9487-1AAD0E4F0815}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAC79173-4DA9-4D59-9487-1AAD0E4F0815}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAC79173-4DA9-4D59-9487-1AAD0E4F0815}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAC79173-4DA9-4D59-9487-1AAD0E4F0815}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31C7FB1B-7797-4E00-BD2F-83458C58E8D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31C7FB1B-7797-4E00-BD2F-83458C58E8D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31C7FB1B-7797-4E00-BD2F-83458C58E8D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31C7FB1B-7797-4E00-BD2F-83458C58E8D6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ED6B7ADB-A945-4062-9D97-00EBCD526EFF}
+	EndGlobalSection
+EndGlobal
