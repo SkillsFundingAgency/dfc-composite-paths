@@ -1,28 +1,26 @@
-using System.Threading.Tasks;
+using DFC.Swagger.Standard.Annotations;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using DFC.Swagger.Standard.Annotations;
-using System.Net;
 using System.ComponentModel.DataAnnotations;
-using DFC.Composite.Paths.Models;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace DFC.Composite.Paths.Functions
 {
-    public static class GetPath
+    public static class DeletePathHttpTrigger
     {
-        [FunctionName(nameof(GetPath))]
-        [ProducesResponseType(typeof(Models.PathModel), (int)HttpStatusCode.OK)]
+        [FunctionName("Delete")]
         [Response(HttpStatusCode = (int)HttpStatusCode.OK, Description = "Path found", ShowSchema = true)]
         [Response(HttpStatusCode = (int)HttpStatusCode.NoContent, Description = "Path does not exist", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.BadRequest, Description = "Request was malformed", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Unauthorized, Description = "API key is unknown or invalid", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Forbidden, Description = "Insufficient access", ShowSchema = false)]
-        [Display(Name = nameof(GetPath), Description = "Provides details of a single path.")]
+        [Display(Name = nameof(DeletePathHttpTrigger), Description = "Deletes a single path record.")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "paths/{path}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "paths/{path}")] HttpRequest req,
             string path,
             ILogger log)
         {
@@ -35,7 +33,7 @@ namespace DFC.Composite.Paths.Functions
 
             await Task.CompletedTask;
 
-            return new OkObjectResult(new PathModel());
+            return new NoContentResult();
         }
     }
 }

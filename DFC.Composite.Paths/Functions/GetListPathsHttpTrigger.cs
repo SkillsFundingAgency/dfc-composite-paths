@@ -4,39 +4,30 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
 using DFC.Swagger.Standard.Annotations;
 using System.Net;
-using DFC.Composite.Paths.Models;
-using DFC.Composite.Paths.Extensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace DFC.Composite.Paths.Functions
 {
-    public static class RegisterPath
+    public static class GetListPathsHttpTrigger
     {
-        [FunctionName(nameof(RegisterPath))]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(PathModel))]
+        [FunctionName("GetList")]
         [Response(HttpStatusCode = (int)HttpStatusCode.OK, Description = "Path found", ShowSchema = true)]
         [Response(HttpStatusCode = (int)HttpStatusCode.NoContent, Description = "Path does not exist", ShowSchema = false)]
-        [Response(HttpStatusCode = (int)HttpStatusCode.BadRequest, Description = "Request was malformed", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Unauthorized, Description = "API key is unknown or invalid", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Forbidden, Description = "Insufficient access", ShowSchema = false)]
-        [Display(Name = nameof(RegisterPath), Description = "Creates a new resource of type 'Paths'.")]
+        [Display(Name = nameof(GetListPathsHttpTrigger), Description = "Retrieves a list off all registered applications paths.")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "paths")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "paths")] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            var body = await req.GetBodyAsync<PathModel>();
-            if (body.IsValid)
-            {
-                return new OkObjectResult(body);
-            }
-            else
-            {
-                return new BadRequestObjectResult(body.ValidationResults);
-            }
+            await Task.CompletedTask;
+
+            return new OkResult();
+
         }
     }
 }
