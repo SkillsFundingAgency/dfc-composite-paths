@@ -13,7 +13,7 @@ namespace DFC.Composite.Paths.Functions
 {
     public static class GetPathHttpTrigger
     {
-        [FunctionName("GetByPath")]
+        [FunctionName("GetById")]
         [ProducesResponseType(typeof(Models.PathModel), (int)HttpStatusCode.OK)]
         [Response(HttpStatusCode = (int)HttpStatusCode.OK, Description = "Path found", ShowSchema = true)]
         [Response(HttpStatusCode = (int)HttpStatusCode.NoContent, Description = "Path does not exist", ShowSchema = false)]
