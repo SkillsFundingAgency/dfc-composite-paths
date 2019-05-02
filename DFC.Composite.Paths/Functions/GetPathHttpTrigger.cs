@@ -20,7 +20,7 @@ namespace DFC.Composite.Paths.Functions
         [Response(HttpStatusCode = (int)HttpStatusCode.BadRequest, Description = "Request was malformed", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Unauthorized, Description = "API key is unknown or invalid", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Forbidden, Description = "Insufficient access", ShowSchema = false)]
-        [Display(Name = nameof(GetPathHttpTrigger), Description = "Provides details of a single path.")]
+        [Display(Name = "Get", Description = "Provides details of a single path.")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "paths/{path}")] HttpRequest req,
             string path,

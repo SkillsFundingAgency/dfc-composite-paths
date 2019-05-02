@@ -12,15 +12,15 @@ using System.Threading.Tasks;
 
 namespace DFC.Composite.Paths.Functions
 {
-    public static class UpdatePathHttpTrigger
+    public static class PutPathHttpTrigger
     {
-        [FunctionName("Update")]
+        [FunctionName("Put")]
         [Response(HttpStatusCode = (int)HttpStatusCode.OK, Description = "Path found", ShowSchema = true)]
         [Response(HttpStatusCode = (int)HttpStatusCode.NoContent, Description = "Path does not exist", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.BadRequest, Description = "Request was malformed", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Unauthorized, Description = "API key is unknown or invalid", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Forbidden, Description = "Insufficient access", ShowSchema = false)]
-        [Display(Name = nameof(UpdatePathHttpTrigger), Description = "Overwrites an entire record.")]
+        [Display(Name = "Put", Description = "Overwrites an entire record.")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "paths/{path}")] HttpRequest req,
             string path,

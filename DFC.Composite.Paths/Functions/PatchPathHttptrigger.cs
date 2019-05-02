@@ -18,7 +18,7 @@ namespace DFC.Composite.Paths.Functions
         [Response(HttpStatusCode = (int)HttpStatusCode.BadRequest, Description = "Request was malformed", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Unauthorized, Description = "API key is unknown or invalid", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Forbidden, Description = "Insufficient access", ShowSchema = false)]
-        [Display(Name = nameof(PostPathHttpTrigger), Description = "Updates specific values without specifying the entire path record")]
+        [Display(Name = "Patch", Description = "Updates specific values without specifying the entire path record")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "paths/{path}")] HttpRequest req,
             string path,
