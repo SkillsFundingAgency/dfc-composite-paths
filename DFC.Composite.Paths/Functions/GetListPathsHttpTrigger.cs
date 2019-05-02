@@ -12,12 +12,12 @@ namespace DFC.Composite.Paths.Functions
 {
     public static class GetListPathsHttpTrigger
     {
-        [FunctionName("GetList")]
+        [FunctionName("Get")]
         [Response(HttpStatusCode = (int)HttpStatusCode.OK, Description = "Path found", ShowSchema = true)]
         [Response(HttpStatusCode = (int)HttpStatusCode.NoContent, Description = "Path does not exist", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Unauthorized, Description = "API key is unknown or invalid", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Forbidden, Description = "Insufficient access", ShowSchema = false)]
-        [Display(Name = "GetList", Description = "Retrieves a list off all registered applications paths.")]
+        [Display(Name = "Get", Description = "Retrieves a list off all registered applications paths.")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "paths")] HttpRequest req,
             ILogger log)
