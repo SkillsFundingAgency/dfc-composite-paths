@@ -26,7 +26,7 @@ namespace DFC.Composite.Paths.Models
         public int TopNavigationOrder { get; set; }
 
         [Display(Description = "Which page layout the application should us.")]
-        [Example(Description = "")]
+        [Example(Description = "FullWidth")]
         [Required]
         public Layout Layout { get; set; }
 

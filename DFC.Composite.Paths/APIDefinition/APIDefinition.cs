@@ -24,7 +24,13 @@ namespace DFC.Composite.Paths.APIDefinition
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             var swaggerDocGenerator = new SwaggerDocumentGenerator();
-            var swaggerResponse = swaggerDocGenerator.GenerateSwaggerDocument(req, ApiTitle, ApiDefinitionDescription, ApiDefinitionName, ApiVersion, Assembly.GetExecutingAssembly());
+            var swaggerResponse = swaggerDocGenerator.GenerateSwaggerDocument(
+                req,
+                ApiTitle,
+                ApiDefinitionDescription,
+                ApiDefinitionName,
+                ApiVersion,
+                Assembly.GetExecutingAssembly());
 
             return new OkObjectResult(swaggerResponse);
         }

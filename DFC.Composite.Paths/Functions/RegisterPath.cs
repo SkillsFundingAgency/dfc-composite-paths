@@ -15,6 +15,7 @@ namespace DFC.Composite.Paths.Functions
     public static class RegisterPath
     {
         [FunctionName(nameof(RegisterPath))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(PathModel))]
         [Response(HttpStatusCode = (int)HttpStatusCode.OK, Description = "Path found", ShowSchema = true)]
         [Response(HttpStatusCode = (int)HttpStatusCode.NoContent, Description = "Path does not exist", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.BadRequest, Description = "Request was malformed", ShowSchema = false)]

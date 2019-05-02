@@ -1,17 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace DFC.Composite.Paths.Common
 {
     public enum Layout
     {
-        [Display(Description = "Uses a layout which is full width ")]
+        [Description("Uses a layout which is full width ")]
         FullWidth = 1,
 
-        [Display(Description = "Uses a layout where the siebar is located on the right")]
+        [Description("Uses a layout where the sidebar is located on the right")]
         SidebarRight = 2,
 
-        [Display(Description = "Uses a layout where the siebar is located on the left")]
-        SidebarLeft3
+        [Description("Uses a layout where the sidebar is located on the left")]
+        SidebarLeft = 3
     }
 
     public enum PageRegion
