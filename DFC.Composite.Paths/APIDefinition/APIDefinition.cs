@@ -1,3 +1,4 @@
+using DFC.Common.Standard.Logging;
 using DFC.Swagger.Standard;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,26 +17,31 @@ namespace DFC.Composite.Paths.APIDefinition
         private const string ApiDefinitionDescription = "Basic details of a National Careers Service " + ApiTitle + " Resource";
         private const string ApiVersion = "0.1.0";
 
+        private ISwaggerDocumentGenerator _swaggerDocumentGenerator;
         private readonly ILogger<APIDefinition> _logger;
+        private ILoggerHelper _loggerHelper;
 
-        public APIDefinition(ILogger<APIDefinition> logger)
+        public APIDefinition(ISwaggerDocumentGenerator swaggerDocumentGenerator, ILogger<APIDefinition> logger, ILoggerHelper loggerHelper)
         {
+            _swaggerDocumentGenerator = swaggerDocumentGenerator;
             _logger = logger;
+            _loggerHelper = loggerHelper;
         }
 
         [FunctionName(ApiDefinitionName)]
         public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = ApiDefinitionRoute)] HttpRequest req)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            _loggerHelper.LogMethodEnter(_logger);
 
-            var swaggerDocGenerator = new SwaggerDocumentGenerator();
-            var swaggerResponse = swaggerDocGenerator.GenerateSwaggerDocument(
+            var swaggerResponse = _swaggerDocumentGenerator.GenerateSwaggerDocument(
                 req,
                 ApiTitle,
                 ApiDefinitionDescription,
                 ApiDefinitionName,
                 ApiVersion,
                 Assembly.GetExecutingAssembly());
+
+            _loggerHelper.LogMethodExit(_logger);
 
             return new OkObjectResult(swaggerResponse);
         }
