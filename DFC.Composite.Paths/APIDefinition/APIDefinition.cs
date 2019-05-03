@@ -1,3 +1,4 @@
+using DFC.Common.Standard.Logging;
 using DFC.Swagger.Standard;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ using System.Reflection;
 
 namespace DFC.Composite.Paths.APIDefinition
 {
-    public static class APIDefinition
+    public class APIDefinition
     {
         private const string ApiTitle = "Composite Paths";
         private const string ApiDefinitionName = "API-Definition";
@@ -16,21 +17,31 @@ namespace DFC.Composite.Paths.APIDefinition
         private const string ApiDefinitionDescription = "Basic details of a National Careers Service " + ApiTitle + " Resource";
         private const string ApiVersion = "0.1.0";
 
-        [FunctionName(ApiDefinitionName)]
-        public static IActionResult Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = ApiDefinitionRoute)] HttpRequest req,
-            ILogger log)
-        {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+        private ISwaggerDocumentGenerator _swaggerDocumentGenerator;
+        private readonly ILogger<APIDefinition> _logger;
+        private ILoggerHelper _loggerHelper;
 
-            var swaggerDocGenerator = new SwaggerDocumentGenerator();
-            var swaggerResponse = swaggerDocGenerator.GenerateSwaggerDocument(
+        public APIDefinition(ISwaggerDocumentGenerator swaggerDocumentGenerator, ILogger<APIDefinition> logger, ILoggerHelper loggerHelper)
+        {
+            _swaggerDocumentGenerator = swaggerDocumentGenerator;
+            _logger = logger;
+            _loggerHelper = loggerHelper;
+        }
+
+        [FunctionName(ApiDefinitionName)]
+        public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = ApiDefinitionRoute)] HttpRequest req)
+        {
+            _loggerHelper.LogMethodEnter(_logger);
+
+            var swaggerResponse = _swaggerDocumentGenerator.GenerateSwaggerDocument(
                 req,
                 ApiTitle,
                 ApiDefinitionDescription,
                 ApiDefinitionName,
                 ApiVersion,
                 Assembly.GetExecutingAssembly());
+
+            _loggerHelper.LogMethodExit(_logger);
 
             return new OkObjectResult(swaggerResponse);
         }

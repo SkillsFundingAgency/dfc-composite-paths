@@ -1,3 +1,7 @@
+using DFC.Common.Standard.Logging;
+using DFC.Composite.Paths.Common;
+using DFC.Composite.Paths.Extensions;
+using DFC.HTTP.Standard;
 using DFC.Swagger.Standard.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,8 +14,19 @@ using System.Threading.Tasks;
 
 namespace DFC.Composite.Paths.Functions
 {
-    public static class DeletePathHttpTrigger
+    public class DeletePathHttpTrigger
     {
+        private readonly ILogger<DeletePathHttpTrigger> _logger;
+        private readonly ILoggerHelper _loggerHelper;
+        private readonly IHttpRequestHelper _httpRequestHelper;
+
+        public DeletePathHttpTrigger(ILogger<DeletePathHttpTrigger> logger, ILoggerHelper loggerHelper, IHttpRequestHelper httpRequestHelper)
+        {
+            _logger = logger;
+            _loggerHelper = loggerHelper;
+            _httpRequestHelper = httpRequestHelper;
+        }
+
         [FunctionName("Delete")]
         [Response(HttpStatusCode = (int)HttpStatusCode.OK, Description = "Path found", ShowSchema = true)]
         [Response(HttpStatusCode = (int)HttpStatusCode.NoContent, Description = "Path does not exist", ShowSchema = false)]
@@ -19,19 +34,23 @@ namespace DFC.Composite.Paths.Functions
         [Response(HttpStatusCode = (int)HttpStatusCode.Unauthorized, Description = "API key is unknown or invalid", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Forbidden, Description = "Insufficient access", ShowSchema = false)]
         [Display(Name = "Delete", Description = "Deletes a single path record.")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "paths/{path}")] HttpRequest req,
-            string path,
-            ILogger log)
+            string path)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            _loggerHelper.LogMethodEnter(_logger);
+
+            var correlationId = _httpRequestHelper.GetOrCreateDssCorrelationId(req);
 
             if (string.IsNullOrWhiteSpace(path))
             {
+                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.UnableToLocatePathInQueryString);
                 return new BadRequestResult();
             }
 
             await Task.CompletedTask;
+
+            _loggerHelper.LogMethodExit(_logger);
 
             return new NoContentResult();
         }
