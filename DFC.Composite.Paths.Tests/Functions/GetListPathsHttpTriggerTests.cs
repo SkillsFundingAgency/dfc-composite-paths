@@ -17,7 +17,7 @@ namespace DFC.Composite.Paths.Tests.Functions
         private Mock<ILoggerHelper> _loggerHelper;
 
         [SetUp]
-        public void CanDoIt()
+        public void SetUp()
         {
             _logger = new Mock<ILogger<GetListPathsHttpTrigger>>();
             _loggerHelper = new Mock<ILoggerHelper>();

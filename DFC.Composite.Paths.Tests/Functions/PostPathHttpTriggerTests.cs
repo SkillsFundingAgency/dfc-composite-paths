@@ -24,7 +24,7 @@ namespace DFC.Composite.Paths.Tests.Functions
         private Mock<IHttpRequestHelper> _requestHelper;
 
         [SetUp]
-        public void CanDoIt()
+        public void SetUp()
         {
             _logger = new Mock<ILogger<PostPathHttpTrigger>>();
             _loggerHelper = new Mock<ILoggerHelper>();
@@ -33,8 +33,33 @@ namespace DFC.Composite.Paths.Tests.Functions
             _function = new PostPathHttpTrigger(_logger.Object, _loggerHelper.Object, _requestHelper.Object);
         }
 
+        [TestCase("")]
+        [TestCase(null)]
+        public async Task Produces_BadRequestObjectResult_When_PathIsInvalid(string path)
+        {
+            var pathModel = new PathModel();
+            pathModel.Path = path;
+            pathModel.Layout = Layout.SidebarLeft;
+
+            var result = await _function.Run(CreateHttpRequest(pathModel));
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
+
+        [TestCase(null)]
+        public async Task Produces_BadRequestObjectResult_When_LayoutIsInvalid(Layout layout)
+        {
+            var pathModel = new PathModel();
+            pathModel.Path = "path1";
+            pathModel.Layout = layout;
+
+            var result = await _function.Run(CreateHttpRequest(pathModel));
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+        }
+
         [Test]
-        public async Task Produces_NoContentResult_When_Invoked()
+        public async Task Produces_NoContentResult_When_Valid()
         {
             var pathModel = new PathModel();
             pathModel.Path = "p1";

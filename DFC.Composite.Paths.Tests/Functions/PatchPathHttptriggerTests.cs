@@ -19,7 +19,7 @@ namespace DFC.Composite.Paths.Tests.Functions
         private Mock<IHttpRequestHelper> _requestHelper;
 
         [SetUp]
-        public void CanDoIt()
+        public void SetUp()
         {
             _logger = new Mock<ILogger<PatchPathHttpTrigger>>();
             _loggerHelper = new Mock<ILoggerHelper>();

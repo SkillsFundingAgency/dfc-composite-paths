@@ -28,6 +28,7 @@ namespace DFC.Composite.Paths.Models
         [Display(Description = "Which page layout the application should us.")]
         [Example(Description = "FullWidth")]
         [Required]
+        [EnumDataType(typeof(Layout))]
         public Layout Layout { get; set; }
 
         [Display(Description = "Indicator stating that the application is online and ready to use.")]
