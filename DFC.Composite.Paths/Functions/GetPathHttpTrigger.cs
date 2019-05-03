@@ -1,5 +1,8 @@
 using DFC.Common.Standard.Logging;
+using DFC.Composite.Paths.Common;
+using DFC.Composite.Paths.Extensions;
 using DFC.Composite.Paths.Models;
+using DFC.HTTP.Standard;
 using DFC.Swagger.Standard.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,8 +19,9 @@ namespace DFC.Composite.Paths.Functions
     {
         private readonly ILogger<GetPathHttpTrigger> _logger;
         private readonly ILoggerHelper _loggerHelper;
+        private readonly IHttpRequestHelper _httpRequestHelper;
 
-        public GetPathHttpTrigger(ILogger<GetPathHttpTrigger> logger, ILoggerHelper loggerHelper)
+        public GetPathHttpTrigger(ILogger<GetPathHttpTrigger> logger, ILoggerHelper loggerHelper, IHttpRequestHelper httpRequestHelper)
         {
             _logger = logger;
             _loggerHelper = loggerHelper;
@@ -37,8 +41,11 @@ namespace DFC.Composite.Paths.Functions
         {
             _loggerHelper.LogMethodEnter(_logger);
 
+            var correlationId = _httpRequestHelper.GetOrCreateDssCorrelationId(req);
+
             if (string.IsNullOrWhiteSpace(path))
             {
+                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.UnableToLocatePathInQueryString);
                 return new BadRequestResult();
             }
 

@@ -1,6 +1,8 @@
 using DFC.Common.Standard.Logging;
+using DFC.Composite.Paths.Common;
 using DFC.Composite.Paths.Extensions;
 using DFC.Composite.Paths.Models;
+using DFC.HTTP.Standard;
 using DFC.Swagger.Standard.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +19,13 @@ namespace DFC.Composite.Paths.Functions
     {
         private readonly ILogger<PutPathHttpTrigger> _logger;
         private readonly ILoggerHelper _loggerHelper;
+        private readonly IHttpRequestHelper _httpRequestHelper;
 
-        public PutPathHttpTrigger(ILogger<PutPathHttpTrigger> logger, ILoggerHelper loggerHelper)
+        public PutPathHttpTrigger(ILogger<PutPathHttpTrigger> logger, ILoggerHelper loggerHelper, IHttpRequestHelper httpRequestHelper)
         {
             _logger = logger;
             _loggerHelper = loggerHelper;
+            _httpRequestHelper = httpRequestHelper;
         }
 
         [FunctionName("Put")]
@@ -38,6 +42,7 @@ namespace DFC.Composite.Paths.Functions
             _loggerHelper.LogMethodEnter(_logger);
 
             IActionResult result = null;
+            var correlationId = _httpRequestHelper.GetOrCreateDssCorrelationId(req);
 
             if (string.IsNullOrEmpty(path))
             {
@@ -51,6 +56,7 @@ namespace DFC.Composite.Paths.Functions
             }
             else
             {
+                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.ValidationFailed);
                 result = new BadRequestObjectResult(body.ValidationResults);
             }
 

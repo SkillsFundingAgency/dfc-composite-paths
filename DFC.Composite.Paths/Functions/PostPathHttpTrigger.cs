@@ -1,6 +1,8 @@
 using DFC.Common.Standard.Logging;
+using DFC.Composite.Paths.Common;
 using DFC.Composite.Paths.Extensions;
 using DFC.Composite.Paths.Models;
+using DFC.HTTP.Standard;
 using DFC.Swagger.Standard.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +19,13 @@ namespace DFC.Composite.Paths.Functions
     {
         private readonly ILogger<PostPathHttpTrigger> _logger;
         private readonly ILoggerHelper _loggerHelper;
+        private readonly IHttpRequestHelper _httpRequestHelper;
 
-        public PostPathHttpTrigger(ILogger<PostPathHttpTrigger> logger, ILoggerHelper loggerHelper)
+        public PostPathHttpTrigger(ILogger<PostPathHttpTrigger> logger, ILoggerHelper loggerHelper, IHttpRequestHelper httpRequestHelper)
         {
             _logger = logger;
             _loggerHelper = loggerHelper;
+            httpRequestHelper = _httpRequestHelper;
         }
 
         [FunctionName("Post")]
@@ -36,6 +40,7 @@ namespace DFC.Composite.Paths.Functions
         {
             _loggerHelper.LogMethodEnter(_logger);
 
+            var correlationId = _httpRequestHelper.GetOrCreateDssCorrelationId(req);
             IActionResult result = null;
 
             var body = await req.GetBodyAsync<PathModel>();
@@ -45,6 +50,7 @@ namespace DFC.Composite.Paths.Functions
             }
             else
             {
+                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.ValidationFailed);
                 result = new BadRequestObjectResult(body.ValidationResults);
             }
 
