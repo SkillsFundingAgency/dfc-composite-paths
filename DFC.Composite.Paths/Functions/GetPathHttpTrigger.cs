@@ -1,3 +1,4 @@
+using DFC.Common.Standard.Logging;
 using DFC.Composite.Paths.Models;
 using DFC.Swagger.Standard.Annotations;
 using Microsoft.AspNetCore.Http;
@@ -14,14 +15,16 @@ namespace DFC.Composite.Paths.Functions
     public class GetPathHttpTrigger
     {
         private readonly ILogger<GetPathHttpTrigger> _logger;
+        private readonly ILoggerHelper _loggerHelper;
 
-        public GetPathHttpTrigger(ILogger<GetPathHttpTrigger> logger)
+        public GetPathHttpTrigger(ILogger<GetPathHttpTrigger> logger, ILoggerHelper loggerHelper)
         {
             _logger = logger;
+            _loggerHelper = loggerHelper;
         }
 
         [FunctionName("GetById")]
-        [ProducesResponseType(typeof(Models.PathModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(PathModel), (int)HttpStatusCode.OK)]
         [Response(HttpStatusCode = (int)HttpStatusCode.OK, Description = "Path found", ShowSchema = true)]
         [Response(HttpStatusCode = (int)HttpStatusCode.NoContent, Description = "Path does not exist", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.BadRequest, Description = "Request was malformed", ShowSchema = false)]
@@ -32,7 +35,7 @@ namespace DFC.Composite.Paths.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "paths/{path}")] HttpRequest req,
             string path)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            _loggerHelper.LogMethodEnter(_logger);
 
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -40,6 +43,8 @@ namespace DFC.Composite.Paths.Functions
             }
 
             await Task.CompletedTask;
+
+            _loggerHelper.LogMethodExit(_logger);
 
             return new OkObjectResult(new PathModel());
         }

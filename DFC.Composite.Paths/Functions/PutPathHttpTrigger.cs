@@ -1,3 +1,4 @@
+using DFC.Common.Standard.Logging;
 using DFC.Composite.Paths.Extensions;
 using DFC.Composite.Paths.Models;
 using DFC.Swagger.Standard.Annotations;
@@ -15,10 +16,12 @@ namespace DFC.Composite.Paths.Functions
     public class PutPathHttpTrigger
     {
         private readonly ILogger<PutPathHttpTrigger> _logger;
+        private readonly ILoggerHelper _loggerHelper;
 
-        public PutPathHttpTrigger(ILogger<PutPathHttpTrigger> logger)
+        public PutPathHttpTrigger(ILogger<PutPathHttpTrigger> logger, ILoggerHelper loggerHelper)
         {
             _logger = logger;
+            _loggerHelper = loggerHelper;
         }
 
         [FunctionName("Put")]
@@ -32,7 +35,9 @@ namespace DFC.Composite.Paths.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "paths/{path}")] HttpRequest req,
             string path)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            _loggerHelper.LogMethodEnter(_logger);
+
+            IActionResult result = null;
 
             if (string.IsNullOrEmpty(path))
             {
@@ -42,12 +47,16 @@ namespace DFC.Composite.Paths.Functions
             var body = await req.GetBodyAsync<PathModel>();
             if (body.IsValid)
             {
-                return new OkObjectResult(body);
+                result = new OkObjectResult(body);
             }
             else
             {
-                return new BadRequestObjectResult(body.ValidationResults);
+                result = new BadRequestObjectResult(body.ValidationResults);
             }
+
+            _loggerHelper.LogMethodExit(_logger);
+
+            return result;
         }
     }
 }

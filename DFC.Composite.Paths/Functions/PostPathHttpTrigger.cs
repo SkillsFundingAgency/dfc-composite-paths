@@ -1,3 +1,4 @@
+using DFC.Common.Standard.Logging;
 using DFC.Composite.Paths.Extensions;
 using DFC.Composite.Paths.Models;
 using DFC.Swagger.Standard.Annotations;
@@ -15,10 +16,12 @@ namespace DFC.Composite.Paths.Functions
     public class PostPathHttpTrigger
     {
         private readonly ILogger<PostPathHttpTrigger> _logger;
+        private readonly ILoggerHelper _loggerHelper;
 
-        public PostPathHttpTrigger(ILogger<PostPathHttpTrigger> logger)
+        public PostPathHttpTrigger(ILogger<PostPathHttpTrigger> logger, ILoggerHelper loggerHelper)
         {
             _logger = logger;
+            _loggerHelper = loggerHelper;
         }
 
         [FunctionName("Post")]
@@ -31,17 +34,23 @@ namespace DFC.Composite.Paths.Functions
         [Display(Name = "Post", Description = "Creates a new resource of type 'Paths'.")]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "paths")] HttpRequest req)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            _loggerHelper.LogMethodEnter(_logger);
+
+            IActionResult result = null;
 
             var body = await req.GetBodyAsync<PathModel>();
             if (body.IsValid)
             {
-                return new OkObjectResult(body);
+                result = new OkObjectResult(body);
             }
             else
             {
-                return new BadRequestObjectResult(body.ValidationResults);
+                result = new BadRequestObjectResult(body.ValidationResults);
             }
+
+            _loggerHelper.LogMethodExit(_logger);
+
+            return result;
         }
     }
 }

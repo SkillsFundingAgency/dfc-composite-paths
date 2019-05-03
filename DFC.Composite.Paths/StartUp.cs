@@ -1,4 +1,5 @@
-﻿using DFC.Composite.Paths;
+﻿using DFC.Common.Standard.Logging;
+using DFC.Composite.Paths;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,13 @@ namespace DFC.Composite.Paths
     {
         public void Configure(IWebJobsBuilder builder)
         {
+            var services = builder.Services;
+            RegisterServices(services);
+        }
+
+        private void RegisterServices(IServiceCollection services)
+        {
+            services.AddTransient<ILoggerHelper, LoggerHelper>();
         }
     }
 }

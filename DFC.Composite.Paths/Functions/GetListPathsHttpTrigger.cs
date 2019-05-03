@@ -1,3 +1,4 @@
+using DFC.Common.Standard.Logging;
 using DFC.Swagger.Standard.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,12 @@ namespace DFC.Composite.Paths.Functions
     public class GetListPathsHttpTrigger
     {
         private readonly ILogger<GetListPathsHttpTrigger> _logger;
+        private readonly ILoggerHelper _loggerHelper;
 
-        public GetListPathsHttpTrigger(ILogger<GetListPathsHttpTrigger> logger)
+        public GetListPathsHttpTrigger(ILogger<GetListPathsHttpTrigger> logger, ILoggerHelper loggerHelper)
         {
             _logger = logger;
+            _loggerHelper = loggerHelper;
         }
 
         [FunctionName("Get")]
@@ -27,9 +30,11 @@ namespace DFC.Composite.Paths.Functions
         [Display(Name = "Get", Description = "Retrieves a list off all registered applications paths.")]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "paths")] HttpRequest req)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            _loggerHelper.LogMethodEnter(_logger);
 
             await Task.CompletedTask;
+
+            _loggerHelper.LogMethodExit(_logger);
 
             return new OkResult();
         }

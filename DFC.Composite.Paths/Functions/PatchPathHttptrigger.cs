@@ -1,3 +1,4 @@
+using DFC.Common.Standard.Logging;
 using DFC.Swagger.Standard.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,12 @@ namespace DFC.Composite.Paths.Functions
     public class PatchPathHttpTrigger
     {
         private readonly ILogger<PatchPathHttpTrigger> _logger;
+        private readonly ILoggerHelper _loggerHelper;
 
-        public PatchPathHttpTrigger(ILogger<PatchPathHttpTrigger> logger)
+        public PatchPathHttpTrigger(ILogger<PatchPathHttpTrigger> logger, ILoggerHelper loggerHelper)
         {
             _logger = logger;
+            _loggerHelper = loggerHelper;
         }
 
         [FunctionName("Patch")]
@@ -30,14 +33,16 @@ namespace DFC.Composite.Paths.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "paths/{path}")] HttpRequest req,
             string path)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
-            
+            _loggerHelper.LogMethodEnter(_logger);
+
             if (string.IsNullOrWhiteSpace(path))
             {
                 return new BadRequestResult();
             }
 
             await Task.CompletedTask;
+
+            _loggerHelper.LogMethodExit(_logger);
 
             return new NoContentResult();
         }

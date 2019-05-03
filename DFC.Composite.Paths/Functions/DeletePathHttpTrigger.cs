@@ -1,3 +1,4 @@
+using DFC.Common.Standard.Logging;
 using DFC.Swagger.Standard.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,12 @@ namespace DFC.Composite.Paths.Functions
     public class DeletePathHttpTrigger
     {
         private readonly ILogger<DeletePathHttpTrigger> _logger;
+        private readonly ILoggerHelper _loggerHelper;
 
-        public DeletePathHttpTrigger(ILogger<DeletePathHttpTrigger> logger)
+        public DeletePathHttpTrigger(ILogger<DeletePathHttpTrigger> logger, ILoggerHelper loggerHelper)
         {
             _logger = logger;
+            _loggerHelper = loggerHelper;
         }
 
         [FunctionName("Delete")]
@@ -30,7 +33,7 @@ namespace DFC.Composite.Paths.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "paths/{path}")] HttpRequest req,
             string path)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            _loggerHelper.LogMethodEnter(_logger);
 
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -38,6 +41,8 @@ namespace DFC.Composite.Paths.Functions
             }
 
             await Task.CompletedTask;
+
+            _loggerHelper.LogMethodExit(_logger);
 
             return new NoContentResult();
         }
