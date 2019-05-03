@@ -12,8 +12,15 @@ using System.Threading.Tasks;
 
 namespace DFC.Composite.Paths.Functions
 {
-    public static class PutPathHttpTrigger
+    public class PutPathHttpTrigger
     {
+        private readonly ILogger<PutPathHttpTrigger> _logger;
+
+        public PutPathHttpTrigger(ILogger<PutPathHttpTrigger> logger)
+        {
+            _logger = logger;
+        }
+
         [FunctionName("Put")]
         [Response(HttpStatusCode = (int)HttpStatusCode.OK, Description = "Path found", ShowSchema = true)]
         [Response(HttpStatusCode = (int)HttpStatusCode.NoContent, Description = "Path does not exist", ShowSchema = false)]
@@ -21,12 +28,11 @@ namespace DFC.Composite.Paths.Functions
         [Response(HttpStatusCode = (int)HttpStatusCode.Unauthorized, Description = "API key is unknown or invalid", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Forbidden, Description = "Insufficient access", ShowSchema = false)]
         [Display(Name = "Put", Description = "Overwrites an entire record.")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "paths/{path}")] HttpRequest req,
-            string path,
-            ILogger log)
+            string path)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             if (string.IsNullOrEmpty(path))
             {

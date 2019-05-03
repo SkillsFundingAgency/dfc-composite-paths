@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace DFC.Composite.Paths.APIDefinition
 {
-    public static class APIDefinition
+    public class APIDefinition
     {
         private const string ApiTitle = "Composite Paths";
         private const string ApiDefinitionName = "API-Definition";
@@ -16,12 +16,17 @@ namespace DFC.Composite.Paths.APIDefinition
         private const string ApiDefinitionDescription = "Basic details of a National Careers Service " + ApiTitle + " Resource";
         private const string ApiVersion = "0.1.0";
 
-        [FunctionName(ApiDefinitionName)]
-        public static IActionResult Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = ApiDefinitionRoute)] HttpRequest req,
-            ILogger log)
+        private readonly ILogger<APIDefinition> _logger;
+
+        public APIDefinition(ILogger<APIDefinition> logger)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            _logger = logger;
+        }
+
+        [FunctionName(ApiDefinitionName)]
+        public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = ApiDefinitionRoute)] HttpRequest req)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             var swaggerDocGenerator = new SwaggerDocumentGenerator();
             var swaggerResponse = swaggerDocGenerator.GenerateSwaggerDocument(

@@ -1,19 +1,26 @@
-using System.Threading.Tasks;
+using DFC.Composite.Paths.Extensions;
+using DFC.Composite.Paths.Models;
+using DFC.Swagger.Standard.Annotations;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
-using DFC.Swagger.Standard.Annotations;
 using System.Net;
-using DFC.Composite.Paths.Models;
-using DFC.Composite.Paths.Extensions;
+using System.Threading.Tasks;
 
 namespace DFC.Composite.Paths.Functions
 {
-    public static class PostPathHttpTrigger
+    public class PostPathHttpTrigger
     {
+        private readonly ILogger<PostPathHttpTrigger> _logger;
+
+        public PostPathHttpTrigger(ILogger<PostPathHttpTrigger> logger)
+        {
+            _logger = logger;
+        }
+
         [FunctionName("Post")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(PathModel))]
         [Response(HttpStatusCode = (int)HttpStatusCode.OK, Description = "Path found", ShowSchema = true)]
@@ -22,11 +29,9 @@ namespace DFC.Composite.Paths.Functions
         [Response(HttpStatusCode = (int)HttpStatusCode.Unauthorized, Description = "API key is unknown or invalid", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Forbidden, Description = "Insufficient access", ShowSchema = false)]
         [Display(Name = "Post", Description = "Creates a new resource of type 'Paths'.")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "paths")] HttpRequest req,
-            ILogger log)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "paths")] HttpRequest req)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             var body = await req.GetBodyAsync<PathModel>();
             if (body.IsValid)

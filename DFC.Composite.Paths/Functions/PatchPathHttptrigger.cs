@@ -10,8 +10,15 @@ using System.Threading.Tasks;
 
 namespace DFC.Composite.Paths.Functions
 {
-    public static class PatchPathHttpTrigger
+    public class PatchPathHttpTrigger
     {
+        private readonly ILogger<PatchPathHttpTrigger> _logger;
+
+        public PatchPathHttpTrigger(ILogger<PatchPathHttpTrigger> logger)
+        {
+            _logger = logger;
+        }
+
         [FunctionName("Patch")]
         [Response(HttpStatusCode = (int)HttpStatusCode.OK, Description = "Path found", ShowSchema = true)]
         [Response(HttpStatusCode = (int)HttpStatusCode.NoContent, Description = "Path does not exist", ShowSchema = false)]
@@ -19,12 +26,11 @@ namespace DFC.Composite.Paths.Functions
         [Response(HttpStatusCode = (int)HttpStatusCode.Unauthorized, Description = "API key is unknown or invalid", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Forbidden, Description = "Insufficient access", ShowSchema = false)]
         [Display(Name = "Patch", Description = "Updates specific values without specifying the entire path record")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "paths/{path}")] HttpRequest req,
-            string path,
-            ILogger log)
+            string path)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
             
             if (string.IsNullOrWhiteSpace(path))
             {
