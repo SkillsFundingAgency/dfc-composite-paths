@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DFC.Composite.Paths.Common
+﻿namespace DFC.Composite.Paths.Common
 {
     public class Message
     {

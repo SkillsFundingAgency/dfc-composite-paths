@@ -25,6 +25,7 @@ namespace DFC.Composite.Paths.Functions
         {
             _logger = logger;
             _loggerHelper = loggerHelper;
+            _httpRequestHelper = httpRequestHelper;
         }
 
         [FunctionName("GetById")]

@@ -25,7 +25,7 @@ namespace DFC.Composite.Paths.Functions
         {
             _logger = logger;
             _loggerHelper = loggerHelper;
-            httpRequestHelper = _httpRequestHelper;
+            _httpRequestHelper = httpRequestHelper;
         }
 
         [FunctionName("Post")]
