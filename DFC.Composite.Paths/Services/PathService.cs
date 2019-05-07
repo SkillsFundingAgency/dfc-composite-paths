@@ -58,6 +58,12 @@ namespace DFC.Composite.Paths.Services
                 model.LastModifiedDate = currentDt;
             }
 
+            var existingPaths = await GetAll();
+            if (existingPaths.Any(x => x.Path == model.Path))
+            {
+                throw new InvalidOperationException($"A path with the name {model.Path} is already registered");
+            }
+
             await _storage.Add<PathModel>(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, model);
         }
 

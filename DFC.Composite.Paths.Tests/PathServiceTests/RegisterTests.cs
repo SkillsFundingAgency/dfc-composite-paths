@@ -72,6 +72,15 @@ namespace DFC.Composite.Paths.Tests.PathServiceTests
 
             var existingPath = await _pathService.Get(newPath.Path);
             Assert.AreNotEqual(DateTime.MinValue, existingPath.LastModifiedDate);
-        }        
+        }
+
+        [Test]
+        public async Task ShouldNot_AllowPathToRegisterIfItsAlreadyRegistered()
+        {
+            var newPath = Create(_path, Layout.FullWidth);
+
+            await _pathService.Register(newPath);
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _pathService.Register(newPath));
+        }
     }
 }
