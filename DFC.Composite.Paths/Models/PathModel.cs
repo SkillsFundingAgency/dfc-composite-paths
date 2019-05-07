@@ -1,5 +1,6 @@
 ﻿using DFC.Composite.Paths.Common;
 using DFC.Swagger.Standard.Annotations;
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,6 +11,7 @@ namespace DFC.Composite.Paths.Models
 
         [Display(Description = "Unique document identifier. This is auto generated")]
         [Example(Description = "b8592ff8-af97-49ad-9fb2-e5c3c717fd85")]
+        [JsonProperty(PropertyName = "id")]
         public Guid DocumentId { get; set; }
 
         [Display(Description = "The path of the application. This should match the url value immediately after the domain. i.e. https://nationalcareeers.service.gov.uk/explore-careers.")]

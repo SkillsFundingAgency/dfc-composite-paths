@@ -98,10 +98,10 @@ namespace DFC.Composite.Paths.Storage.Cosmos
             await client.DeleteDocumentAsync(link);
         }
 
-        private async Task<DocumentClient> Init(string dbId, string collectionId)
+        private async Task<DocumentClient> Init(string databaseId, string collectionId)
         {
             var db = new Database();
-            db.Id = dbId;
+            db.Id = databaseId;
 
             //create db
             var client = new DocumentClient(new Uri(_endpointUri), _key);
@@ -109,7 +109,7 @@ namespace DFC.Composite.Paths.Storage.Cosmos
 
             //create document collection
             var docCollection = await client.CreateDocumentCollectionIfNotExistsAsync(
-                UriFactory.CreateDatabaseUri(dbId),
+                UriFactory.CreateDatabaseUri(databaseId),
                 new DocumentCollection { Id = collectionId });
 
             return client;
