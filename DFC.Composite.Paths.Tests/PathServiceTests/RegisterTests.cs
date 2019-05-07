@@ -10,11 +10,8 @@ using System.Threading.Tasks;
 namespace DFC.Composite.Paths.Tests.PathServiceTests
 {
     [TestFixture]
-    public class RegisterTests
+    public class RegisterTests : PathServiceTestBase
     {
-        private string _cosmosEndpointUri = "https://localhost:8081";
-        private string _cosmosKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
-        private string _databaseName = "test";
         private string _collectionName = "register";
         private string _path = "path1";
 
@@ -26,12 +23,12 @@ namespace DFC.Composite.Paths.Tests.PathServiceTests
         public void SetUp()
         {
             _cosmosSettings = new CosmosSettings() { };
-            _cosmosSettings.Uri = _cosmosEndpointUri;
-            _cosmosSettings.Key = _cosmosKey;
-            _cosmosSettings.DatabaseName = _databaseName;
+            _cosmosSettings.Uri = CosmosEndpointUri;
+            _cosmosSettings.Key = CosmosKey;
+            _cosmosSettings.DatabaseName = CosmosDatabaseName;
             _cosmosSettings.CollectionName = _collectionName;
 
-            _documentStorage = new CosmosDocumentStorage(_cosmosEndpointUri, _cosmosKey);
+            _documentStorage = new CosmosDocumentStorage(CosmosEndpointUri, CosmosKey);
             _pathService = new PathService(_documentStorage, _cosmosSettings);
         }
 
@@ -48,7 +45,7 @@ namespace DFC.Composite.Paths.Tests.PathServiceTests
             var newPath = Create(_path, Layout.FullWidth);
 
             await _pathService.Register(newPath);
-            
+
             var existingPath = await _pathService.Get(newPath.Path);
             Assert.IsNotNull(existingPath);
             Assert.AreEqual(newPath.Path, existingPath.Path);
@@ -75,16 +72,6 @@ namespace DFC.Composite.Paths.Tests.PathServiceTests
 
             var existingPath = await _pathService.Get(newPath.Path);
             Assert.AreNotEqual(DateTime.MinValue, existingPath.LastModifiedDate);
-        }
-
-        private PathModel Create(string path, Layout layout)
-        {
-            var pathModel = new PathModel();
-
-            pathModel.Path = path;
-            pathModel.Layout = layout;
-
-            return pathModel;
-        }
+        }        
     }
 }
