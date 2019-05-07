@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DFC.Composite.Paths.Services
 {
-    public class PathService
+    public class PathService : IPathService
     {
         private readonly IDocumentStorage _storage;
         private readonly CosmosSettings _cosmosSettings;
@@ -22,12 +22,12 @@ namespace DFC.Composite.Paths.Services
             await _storage.Delete(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, path);
         }
 
-        public async Task<IEnumerable<PathModel>> GetAllPaths()
+        public async Task<IEnumerable<PathModel>> GetAll()
         {
             return await _storage.Search<PathModel>(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, null);
         }
 
-        private async Task<PathModel> Get(string path)
+        public async Task<PathModel> Get(string path)
         {
             return await _storage.Get<PathModel>(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, path);
         }
