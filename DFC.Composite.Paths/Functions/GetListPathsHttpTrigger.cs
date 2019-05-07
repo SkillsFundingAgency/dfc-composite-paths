@@ -1,4 +1,5 @@
 using DFC.Common.Standard.Logging;
+using DFC.Composite.Paths.Services;
 using DFC.Swagger.Standard.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,16 @@ namespace DFC.Composite.Paths.Functions
     {
         private readonly ILogger<GetListPathsHttpTrigger> _logger;
         private readonly ILoggerHelper _loggerHelper;
+        private readonly IPathService _pathService;
 
-        public GetListPathsHttpTrigger(ILogger<GetListPathsHttpTrigger> logger, ILoggerHelper loggerHelper)
+        public GetListPathsHttpTrigger(
+            ILogger<GetListPathsHttpTrigger> logger,
+            ILoggerHelper loggerHelper,
+            IPathService pathService)
         {
             _logger = logger;
             _loggerHelper = loggerHelper;
+            _pathService = pathService;
         }
 
         [FunctionName("Get")]
@@ -32,11 +38,11 @@ namespace DFC.Composite.Paths.Functions
         {
             _loggerHelper.LogMethodEnter(_logger);
 
-            await Task.CompletedTask;
+            var result = await _pathService.GetAll();
 
             _loggerHelper.LogMethodExit(_logger);
 
-            return new OkResult();
+            return new OkObjectResult(result);
         }
     }
 }

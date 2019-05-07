@@ -1,10 +1,15 @@
 ﻿using DFC.Common.Standard.Logging;
 using DFC.Composite.Paths;
+using DFC.Composite.Paths.Services;
+using DFC.Composite.Paths.Storage;
+using DFC.Composite.Paths.Storage.Cosmos;
 using DFC.HTTP.Standard;
 using DFC.Swagger.Standard;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 [assembly: WebJobsStartup(typeof(StartUp))]
 namespace DFC.Composite.Paths
@@ -13,15 +18,39 @@ namespace DFC.Composite.Paths
     {
         public void Configure(IWebJobsBuilder builder)
         {
-            var services = builder.Services;
-            RegisterServices(services);
+            var config = CreateConfiguration(builder);
+            RegisterServices(builder.Services, config);
         }
 
-        private void RegisterServices(IServiceCollection services)
+        private IConfiguration CreateConfiguration(IWebJobsBuilder builder)
         {
-            services.AddTransient<ISwaggerDocumentGenerator, SwaggerDocumentGenerator>();
-            services.AddTransient<ILoggerHelper, LoggerHelper>();
+            var configurationBuilder = new ConfigurationBuilder();
+            var descriptor = builder.Services.FirstOrDefault(d => d.ServiceType == typeof(IConfiguration));
+            if (descriptor?.ImplementationInstance is IConfigurationRoot configuration)
+            {
+                configurationBuilder.AddConfiguration(configuration);
+            }
+
+            return configurationBuilder.Build();
+        }
+
+        private void RegisterServices(IServiceCollection services, IConfiguration configuration)
+        {
+            var cosmosSettings = new CosmosSettings()
+            {
+                Key = configuration["cosmosKey"],
+                Uri = configuration["cosmosUrl"],
+                DatabaseName = configuration["cosmosDatabase"],
+                CollectionName = configuration["cosmosCollection"]
+            };
+            services.AddSingleton(cosmosSettings);
+
+            services.AddTransient<IDocumentStorage>(x => new CosmosDocumentStorage(cosmosSettings.Uri, cosmosSettings.Key));
+
             services.AddTransient<IHttpRequestHelper, HttpRequestHelper>();
+            services.AddTransient<ILoggerHelper, LoggerHelper>();
+            services.AddTransient<IPathService, PathService>();
+            services.AddTransient<ISwaggerDocumentGenerator, SwaggerDocumentGenerator>();
         }
     }
 }

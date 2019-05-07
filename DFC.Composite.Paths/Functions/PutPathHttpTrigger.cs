@@ -2,6 +2,7 @@ using DFC.Common.Standard.Logging;
 using DFC.Composite.Paths.Common;
 using DFC.Composite.Paths.Extensions;
 using DFC.Composite.Paths.Models;
+using DFC.Composite.Paths.Services;
 using DFC.HTTP.Standard;
 using DFC.Swagger.Standard.Annotations;
 using Microsoft.AspNetCore.Http;
@@ -20,12 +21,18 @@ namespace DFC.Composite.Paths.Functions
         private readonly ILogger<PutPathHttpTrigger> _logger;
         private readonly ILoggerHelper _loggerHelper;
         private readonly IHttpRequestHelper _httpRequestHelper;
+        private readonly IPathService _pathService;
 
-        public PutPathHttpTrigger(ILogger<PutPathHttpTrigger> logger, ILoggerHelper loggerHelper, IHttpRequestHelper httpRequestHelper)
+        public PutPathHttpTrigger(
+            ILogger<PutPathHttpTrigger> logger, 
+            ILoggerHelper loggerHelper, 
+            IHttpRequestHelper httpRequestHelper,
+            IPathService pathService)
         {
             _logger = logger;
             _loggerHelper = loggerHelper;
             _httpRequestHelper = httpRequestHelper;
+            _pathService = pathService;
         }
 
         [FunctionName("Put")]
@@ -52,6 +59,7 @@ namespace DFC.Composite.Paths.Functions
             var body = await req.GetBodyAsync<PathModel>();
             if (body.IsValid)
             {
+                await _pathService.Update(body.Value);
                 result = new OkObjectResult(body);
             }
             else

@@ -1,6 +1,7 @@
 using DFC.Common.Standard.Logging;
 using DFC.Composite.Paths.Common;
 using DFC.Composite.Paths.Extensions;
+using DFC.Composite.Paths.Services;
 using DFC.HTTP.Standard;
 using DFC.Swagger.Standard.Annotations;
 using Microsoft.AspNetCore.Http;
@@ -19,12 +20,18 @@ namespace DFC.Composite.Paths.Functions
         private readonly ILogger<DeletePathHttpTrigger> _logger;
         private readonly ILoggerHelper _loggerHelper;
         private readonly IHttpRequestHelper _httpRequestHelper;
+        private readonly IPathService _pathService;
 
-        public DeletePathHttpTrigger(ILogger<DeletePathHttpTrigger> logger, ILoggerHelper loggerHelper, IHttpRequestHelper httpRequestHelper)
+        public DeletePathHttpTrigger(
+            ILogger<DeletePathHttpTrigger> logger, 
+            ILoggerHelper loggerHelper, 
+            IHttpRequestHelper httpRequestHelper,
+            IPathService pathService)
         {
             _logger = logger;
             _loggerHelper = loggerHelper;
             _httpRequestHelper = httpRequestHelper;
+            _pathService = pathService;
         }
 
         [FunctionName("Delete")]
@@ -48,7 +55,7 @@ namespace DFC.Composite.Paths.Functions
                 return new BadRequestResult();
             }
 
-            await Task.CompletedTask;
+            await _pathService.Delete(path);
 
             _loggerHelper.LogMethodExit(_logger);
 

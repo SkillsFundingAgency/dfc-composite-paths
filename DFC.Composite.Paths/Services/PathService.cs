@@ -69,8 +69,9 @@ namespace DFC.Composite.Paths.Services
             {
                 var currentDt = DateTime.Now;
                 model.LastModifiedDate = currentDt;
+                model.DocumentId = pathDocument.DocumentId;
 
-                await _storage.Update<PathModel>(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, model.DocumentId.ToString(), model);
+                await _storage.Update<PathModel>(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, pathDocument.DocumentId.ToString(), model);
             }
         }
 

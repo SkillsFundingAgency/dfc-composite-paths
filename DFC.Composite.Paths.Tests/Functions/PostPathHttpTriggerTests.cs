@@ -2,6 +2,7 @@
 using DFC.Composite.Paths.Common;
 using DFC.Composite.Paths.Functions;
 using DFC.Composite.Paths.Models;
+using DFC.Composite.Paths.Services;
 using DFC.Composite.Paths.Tests.Extensions;
 using DFC.HTTP.Standard;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +23,7 @@ namespace DFC.Composite.Paths.Tests.Functions
         private Mock<ILogger<PostPathHttpTrigger>> _logger;
         private Mock<ILoggerHelper> _loggerHelper;
         private Mock<IHttpRequestHelper> _requestHelper;
+        private Mock<IPathService> _pathService;
 
         [SetUp]
         public void SetUp()
@@ -29,8 +31,9 @@ namespace DFC.Composite.Paths.Tests.Functions
             _logger = new Mock<ILogger<PostPathHttpTrigger>>();
             _loggerHelper = new Mock<ILoggerHelper>();
             _requestHelper = new Mock<IHttpRequestHelper>();
+            _pathService = new Mock<IPathService>();
 
-            _function = new PostPathHttpTrigger(_logger.Object, _loggerHelper.Object, _requestHelper.Object);
+            _function = new PostPathHttpTrigger(_logger.Object, _loggerHelper.Object, _requestHelper.Object, _pathService.Object);
         }
 
         [TestCase("")]
