@@ -1,6 +1,5 @@
 ﻿using DFC.Common.Standard.Logging;
 using DFC.Composite.Paths.Functions;
-using DFC.Composite.Paths.Models;
 using DFC.Composite.Paths.Services;
 using DFC.HTTP.Standard;
 using Microsoft.AspNetCore.Http;

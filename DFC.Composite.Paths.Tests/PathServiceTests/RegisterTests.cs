@@ -1,5 +1,4 @@
 ﻿using DFC.Composite.Paths.Common;
-using DFC.Composite.Paths.Models;
 using DFC.Composite.Paths.Services;
 using DFC.Composite.Paths.Storage;
 using DFC.Composite.Paths.Storage.Cosmos;
