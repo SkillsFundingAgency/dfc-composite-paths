@@ -1,5 +1,6 @@
 ﻿using DFC.Common.Standard.Logging;
 using DFC.Composite.Paths.Functions;
+using DFC.Composite.Paths.Models;
 using DFC.Composite.Paths.Services;
 using DFC.HTTP.Standard;
 using Microsoft.AspNetCore.Http;
@@ -43,9 +44,24 @@ namespace DFC.Composite.Paths.Tests.Functions
         [TestCase("path1")]
         public async Task Produces_NoContentResult_When_PathIsValid(string path)
         {
+            var pathModel = new PathModel() { Path = path };
+            _pathService.Setup(x => x.Get(path)).ReturnsAsync(pathModel);
+
             var result = await _function.Run(CreateHttpRequest(), path);
 
             Assert.IsInstanceOf<NoContentResult>(result);
+        }
+
+        [Test]
+        public async Task Produces_NotFoundResult_When_PathDoesNotExist()
+        {
+            var path = "path1";
+            PathModel pathModel = null;
+            _pathService.Setup(x => x.Get(path)).ReturnsAsync(pathModel);
+
+            var result = await _function.Run(CreateHttpRequest(), path);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
         private HttpRequest CreateHttpRequest()

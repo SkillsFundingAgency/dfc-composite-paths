@@ -55,6 +55,18 @@ namespace DFC.Composite.Paths.Tests.Functions
             Assert.AreEqual(pathModel.TopNavigationText, typedValue.TopNavigationText);
         }
 
+        [Test]
+        public async Task ProducesNotFoundResult_When_PathDoesNotExist()
+        {
+            var path = "path1";
+            PathModel pathModel = null;
+            _pathService.Setup(x => x.Get(path)).ReturnsAsync(pathModel);
+
+            var result = await _function.Run(CreateHttpRequest(), path);
+
+            Assert.IsInstanceOf<NotFoundResult>(result);
+        }
+
         private HttpRequest CreateHttpRequest()
         {
             return null;

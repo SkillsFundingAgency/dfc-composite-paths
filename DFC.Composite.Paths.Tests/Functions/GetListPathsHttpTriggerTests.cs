@@ -29,7 +29,7 @@ namespace DFC.Composite.Paths.Tests.Functions
         }
 
         [Test]
-        public async Task Produces_NoContentResult_When_Invoked()
+        public async Task Produces_OkObjectResult_When_Invoked()
         {
             var result = await _function.Run(CreateHttpRequest());
 

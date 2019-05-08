@@ -55,6 +55,13 @@ namespace DFC.Composite.Paths.Functions
                 return new BadRequestResult();
             }
 
+            var pathModel = await _pathService.Get(path);
+            if (pathModel == null)
+            {
+                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.PathNotFound);
+                return new NotFoundResult();
+            }
+
             await _pathService.Delete(path);
 
             _loggerHelper.LogMethodExit(_logger);

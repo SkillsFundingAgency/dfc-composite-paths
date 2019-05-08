@@ -62,7 +62,7 @@ namespace DFC.Composite.Paths.Tests.Functions
         }
 
         [Test]
-        public async Task Produces_NoContentResult_When_Valid()
+        public async Task Produces_OkObjectResult_When_Valid()
         {
             var pathModel = new PathModel();
             pathModel.Path = "p1";
