@@ -1,5 +1,6 @@
 ﻿using DFC.Common.Standard.Logging;
 using DFC.Composite.Paths.Functions;
+using DFC.Composite.Paths.Models;
 using DFC.Composite.Paths.Services;
 using DFC.HTTP.Standard;
 using Microsoft.AspNetCore.Http;
@@ -43,11 +44,15 @@ namespace DFC.Composite.Paths.Tests.Functions
         [TestCase("path1")]
         public async Task Produces_OkObjectResult_When_PathIsValid(string path)
         {
+            var pathModel = new PathModel() { Path = path, TopNavigationText = "tnt1" };
+            _pathService.Setup(x => x.Get(path)).ReturnsAsync(pathModel);
+
             var result = await _function.Run(CreateHttpRequest(), path);
 
-            var typedResult = As<OkObjectResult>(result);
-
+            var typedActionResultResult = As<OkObjectResult>(result);
+            var typedValue = typedActionResultResult.Value as PathModel;
             Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.AreEqual(pathModel.TopNavigationText, typedValue.TopNavigationText);
         }
 
         private HttpRequest CreateHttpRequest()
