@@ -58,7 +58,7 @@ namespace DFC.Composite.Paths.Services
             }
 
             var existingPaths = await GetAll();
-            if (existingPaths.Any(x => x.Path == model.Path))
+            if (existingPaths.Any(x => x.Path.ToLower() == model.Path.ToLower()))
             {
                 throw new InvalidOperationException($"A path with the name {model.Path} is already registered");
             }
@@ -73,6 +73,8 @@ namespace DFC.Composite.Paths.Services
             if (pathDocument != null)
             {
                 var currentDt = DateTime.Now;
+
+                model.DateOfRegistration = pathDocument.DateOfRegistration;
                 model.LastModifiedDate = currentDt;
                 model.DocumentId = pathDocument.DocumentId;
 
