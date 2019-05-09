@@ -1,14 +1,17 @@
 using DFC.Common.Standard.Logging;
 using DFC.Composite.Paths.Common;
 using DFC.Composite.Paths.Extensions;
+using DFC.Composite.Paths.Models;
 using DFC.Composite.Paths.Services;
 using DFC.HTTP.Standard;
 using DFC.Swagger.Standard.Annotations;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
@@ -55,7 +58,17 @@ namespace DFC.Composite.Paths.Functions
                 return new BadRequestResult();
             }
 
-            await Task.CompletedTask;
+            var requestBody = await req.ReadAsStringAsync();
+            var pathPatch = JsonConvert.DeserializeObject<JsonPatchDocument<PathModel>>(requestBody);
+
+            var currentPath = await _pathService.Get(path);
+            if (currentPath == null)
+            {
+                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.PathNotFound);
+                return new NotFoundResult();
+            }
+            pathPatch.ApplyTo(currentPath);
+            await _pathService.Update(currentPath);
 
             _loggerHelper.LogMethodExit(_logger);
 

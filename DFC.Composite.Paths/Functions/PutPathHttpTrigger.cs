@@ -24,8 +24,8 @@ namespace DFC.Composite.Paths.Functions
         private readonly IPathService _pathService;
 
         public PutPathHttpTrigger(
-            ILogger<PutPathHttpTrigger> logger, 
-            ILoggerHelper loggerHelper, 
+            ILogger<PutPathHttpTrigger> logger,
+            ILoggerHelper loggerHelper,
             IHttpRequestHelper httpRequestHelper,
             IPathService pathService)
         {
@@ -59,6 +59,13 @@ namespace DFC.Composite.Paths.Functions
             var body = await req.GetBodyAsync<PathModel>();
             if (body.IsValid)
             {
+                var currentPath = await _pathService.Get(path);
+                if (currentPath == null)
+                {
+                    _loggerHelper.LogInformationMessage(_logger, correlationId, Message.PathNotFound);
+                    return new NotFoundResult();
+                }
+
                 await _pathService.Update(body.Value);
                 result = new OkObjectResult(body);
             }

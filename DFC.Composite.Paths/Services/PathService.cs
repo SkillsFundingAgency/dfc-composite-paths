@@ -66,19 +66,19 @@ namespace DFC.Composite.Paths.Services
             await _storage.Add<PathModel>(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, model);
         }
 
-        public async Task Update(PathModel model)
+        public async Task Update(PathModel updateModel)
         {
-            var pathDocument = await GetPath(model.Path);
+            var currentModel = await GetPath(updateModel.Path);
 
-            if (pathDocument != null)
+            if (currentModel != null)
             {
                 var currentDt = DateTime.Now;
 
-                model.DateOfRegistration = pathDocument.DateOfRegistration;
-                model.LastModifiedDate = currentDt;
-                model.DocumentId = pathDocument.DocumentId;
+                updateModel.DateOfRegistration = currentModel.DateOfRegistration;
+                updateModel.DocumentId = currentModel.DocumentId;
+                updateModel.LastModifiedDate = currentDt;
 
-                await _storage.Update<PathModel>(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, pathDocument.DocumentId.ToString(), model);
+                await _storage.Update<PathModel>(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, currentModel.DocumentId.ToString(), updateModel);
             }
         }
 
@@ -87,6 +87,5 @@ namespace DFC.Composite.Paths.Services
             var documents = await _storage.Search<PathModel>(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, x => x.Path == path);
             return documents.FirstOrDefault();
         }
-
     }
 }
