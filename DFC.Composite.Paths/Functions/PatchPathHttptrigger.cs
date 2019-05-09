@@ -72,7 +72,7 @@ namespace DFC.Composite.Paths.Functions
 
             _loggerHelper.LogMethodExit(_logger);
 
-            return new NoContentResult();
+            return new OkObjectResult(currentPath);
         }
     }
 }
