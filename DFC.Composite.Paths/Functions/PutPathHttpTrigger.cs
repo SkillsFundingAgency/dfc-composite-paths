@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
@@ -48,36 +49,45 @@ namespace DFC.Composite.Paths.Functions
         {
             _loggerHelper.LogMethodEnter(_logger);
 
-            IActionResult result = null;
             var correlationId = _httpRequestHelper.GetOrCreateDssCorrelationId(req);
 
             if (string.IsNullOrEmpty(path))
             {
+                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.UnableToLocatePathInQueryString);
                 return new BadRequestResult();
             }
 
             var body = await req.GetBodyAsync<PathModel>();
-            if (body.IsValid)
+            if (body == null || body.Value == null)
             {
-                var currentPath = await _pathService.Get(path);
-                if (currentPath == null)
-                {
-                    _loggerHelper.LogInformationMessage(_logger, correlationId, Message.PathNotFound);
-                    return new NotFoundResult();
-                }
-
-                await _pathService.Update(body.Value);
-                result = new OkObjectResult(body);
+                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.PayloadMalformed);
+                return new BadRequestResult();
             }
-            else
+
+            if (!body.IsValid)
             {
                 _loggerHelper.LogInformationMessage(_logger, correlationId, Message.ValidationFailed);
-                result = new BadRequestObjectResult(body.ValidationResults);
+                return new BadRequestObjectResult(body.ValidationResults);
             }
 
-            _loggerHelper.LogMethodExit(_logger);
+            var currentPath = await _pathService.Get(path);
+            if (currentPath == null)
+            {
+                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.PathDoesNotExist);
+                return new NoContentResult();
+            }
 
-            return result;
+            try
+            {
+                await _pathService.Update(body.Value);
+                _loggerHelper.LogMethodExit(_logger);
+                return new OkResult();
+            }
+            catch (Exception ex)
+            {
+                _loggerHelper.LogException(_logger, correlationId, ex);
+                return new UnprocessableEntityObjectResult(ex);
+            }
         }
     }
 }

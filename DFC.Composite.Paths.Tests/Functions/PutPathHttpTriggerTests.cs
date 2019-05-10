@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using System;
 using System.Threading.Tasks;
 
 namespace DFC.Composite.Paths.Tests.Functions
@@ -40,29 +41,61 @@ namespace DFC.Composite.Paths.Tests.Functions
         [TestCase(null)]
         public async Task Produces_BadRequestResult_When_PathIsInvalid(string path)
         {
-            var model = new PathModel();
+            var updateToModel = new PathModel();
 
-            var result = await _function.Run(CreateHttpRequest(model), path);
+            var result = await _function.Run(CreateHttpRequest(updateToModel), path);
 
             Assert.IsInstanceOf<BadRequestResult>(result);
         }
 
-        public async Task Produces_NoContentResult_When_PathIsValid(string path)
+        [Test]
+        public async Task Produces_BadRequestObjectResult_When_NoPayloadDoesNotExist()
         {
-            var model = new PathModel() { Path = "p1", Layout = Layout.SidebarRight };
+            var path = "path1";
+            PathModel pathModel = null;
 
-            var result = await _function.Run(CreateHttpRequest(model), path);
+            var result = await _function.Run(CreateHttpRequest(pathModel), path);
 
-            Assert.IsInstanceOf<NoContentResult>(result);
+            Assert.IsInstanceOf<BadRequestResult>(result);
         }
 
-        private HttpRequest CreateHttpRequest(PathModel model)
+        [Test]
+        public async Task Produces_OKResult_When_PathIsValid()
+        {
+            var path = "path1";
+            var savedPathModel = new PathModel();
+            var updateToModel = new PathModel() { Path = "p1", Layout = Layout.SidebarRight };
+            _pathService.Setup(x => x.Get(path)).ReturnsAsync(savedPathModel);
+
+            var result = await _function.Run(CreateHttpRequest(updateToModel), path);
+
+            Assert.IsInstanceOf<OkResult>(result);
+        }
+
+        [Test]
+        public async Task Produces_UnprocessableEntityObjectResult_When_UpdateThrowsException()
+        {
+            var path = "path1";
+            var savedPathModel = new PathModel();
+            var updateToModel = new PathModel() { Path = "p1", Layout = Layout.SidebarRight };
+            _pathService.Setup(x => x.Get(path)).ReturnsAsync(savedPathModel);
+            _pathService.Setup(x => x.Update(It.IsAny<PathModel>())).Throws(new InvalidOperationException());
+
+            var result = await _function.Run(CreateHttpRequest(updateToModel), path);
+
+            Assert.IsInstanceOf<UnprocessableEntityObjectResult>(result);
+        }
+
+        private HttpRequest CreateHttpRequest(object model)
         {
             var context = new DefaultHttpContext();
             var result = new DefaultHttpRequest(context);
 
-            var json = JsonConvert.SerializeObject(model);
-            result.Body = json.AsStream();
+            if (model != null)
+            {
+                var json = JsonConvert.SerializeObject(model);
+                result.Body = json.AsStream();
+            }
 
             return result;
         }

@@ -38,7 +38,7 @@ namespace DFC.Composite.Paths.Services
             return await GetPath(path);
         }
 
-        public async Task Register(PathModel model)
+        public async Task<PathModel> Register(PathModel model)
         {
             var currentDt = DateTime.Now;
 
@@ -64,6 +64,8 @@ namespace DFC.Composite.Paths.Services
             }
 
             await _storage.Add<PathModel>(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, model);
+
+            return model;
         }
 
         public async Task Update(PathModel updateModel)

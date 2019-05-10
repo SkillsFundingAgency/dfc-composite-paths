@@ -61,8 +61,8 @@ namespace DFC.Composite.Paths.Functions
 
             if (pathModel == null)
             {
-                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.PathNotFound);
-                return new NotFoundResult();
+                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.PathDoesNotExist);
+                return new NoContentResult();
             }
 
             _loggerHelper.LogMethodExit(_logger);

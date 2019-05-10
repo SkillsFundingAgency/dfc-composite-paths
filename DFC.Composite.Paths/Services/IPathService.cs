@@ -12,7 +12,7 @@ namespace DFC.Composite.Paths.Services
 
         Task<PathModel> Get(string path);
 
-        Task Register(PathModel model);
+        Task<PathModel> Register(PathModel model);
 
         Task Update(PathModel model);
     }

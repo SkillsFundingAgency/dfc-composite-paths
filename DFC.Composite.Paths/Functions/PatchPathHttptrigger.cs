@@ -12,6 +12,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
@@ -43,6 +44,7 @@ namespace DFC.Composite.Paths.Functions
         [Response(HttpStatusCode = (int)HttpStatusCode.BadRequest, Description = "Request was malformed", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Unauthorized, Description = "API key is unknown or invalid", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Forbidden, Description = "Insufficient access", ShowSchema = false)]
+        [Response(HttpStatusCode = (int)HttpStatusCode.UnprocessableEntity, Description = "Unprocessable entity", ShowSchema = false)]
         [Display(Name = "Patch", Description = "Updates specific values without specifying the entire path record")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "paths/{path}")] HttpRequest req,
@@ -58,21 +60,47 @@ namespace DFC.Composite.Paths.Functions
                 return new BadRequestResult();
             }
 
-            var requestBody = await req.ReadAsStringAsync();
-            var pathPatch = JsonConvert.DeserializeObject<JsonPatchDocument<PathModel>>(requestBody);
+            JsonPatchDocument<PathModel> pathPatch = null;
+            try
+            {
+                var requestBody = await req.ReadAsStringAsync();
+                pathPatch = JsonConvert.DeserializeObject<JsonPatchDocument<PathModel>>(requestBody);
+            }
+            catch (Exception ex)
+            {
+                _loggerHelper.LogException(_logger, correlationId, ex);
+                return new BadRequestResult();
+            }
 
             var currentPath = await _pathService.Get(path);
             if (currentPath == null)
             {
-                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.PathNotFound);
-                return new NotFoundResult();
+                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.PathDoesNotExist);
+                return new NoContentResult();
             }
-            pathPatch.ApplyTo(currentPath);
-            await _pathService.Update(currentPath);
 
-            _loggerHelper.LogMethodExit(_logger);
+            try
+            {
+                pathPatch.ApplyTo(currentPath);
+            }
+            catch (Exception ex)
+            {
+                _loggerHelper.LogException(_logger, correlationId, ex);
+                return new BadRequestResult();
+            }
 
-            return new OkObjectResult(currentPath);
+            try
+            {
+                await _pathService.Update(currentPath);
+                _loggerHelper.LogMethodExit(_logger);
+                return new OkObjectResult(currentPath);
+            }
+            catch (Exception ex)
+            {
+                _loggerHelper.LogException(_logger, correlationId, ex);
+                return new UnprocessableEntityObjectResult(ex);
+            }
+
         }
     }
 }

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using System;
 using System.Threading.Tasks;
 
 namespace DFC.Composite.Paths.Tests.Functions
@@ -37,6 +38,22 @@ namespace DFC.Composite.Paths.Tests.Functions
             _function = new PatchPathHttpTrigger(_logger.Object, _loggerHelper.Object, _requestHelper.Object, _pathService.Object);
         }
 
+        [Test]
+        public async Task Produces_NoContentResult_When_PathDoesNotExist()
+        {
+            var path = "path1";
+            PathModel pathModel = null;
+
+            var patch = new JsonPatchDocument<PathModel>();
+            patch.Add(x => x.Layout, Layout.SidebarRight);
+
+            _pathService.Setup(x => x.Get(path)).ReturnsAsync(pathModel);
+
+            var result = await _function.Run(CreateHttpRequest(patch), path);
+
+            Assert.IsInstanceOf<NoContentResult>(result);
+        }
+
         [TestCase("")]
         [TestCase(null)]
         public async Task Produces_BadRequestResult_When_PathIsInvalid(string path)
@@ -45,6 +62,35 @@ namespace DFC.Composite.Paths.Tests.Functions
             var result = await _function.Run(CreateHttpRequest(model), path);
 
             Assert.IsInstanceOf<BadRequestResult>(result);
+        }
+
+        [Test]
+        public async Task Produces_BadRequestResult_When_PatchPayloadIsMalformed()
+        {
+            var peristedPathModel = new PathModel() { };
+            var path = "path1";
+            var patch = new JsonPatchDocument<FormFile>();
+            patch.Add(x => x.ContentType, "ContentType1");
+            _pathService.Setup(x => x.Get(path)).ReturnsAsync(peristedPathModel);
+
+            var result = await _function.Run(CreateHttpRequest(patch), path);
+
+            Assert.IsInstanceOf<BadRequestResult>(result);
+        }
+
+        [Test]
+        public async Task Produces_UnprocessableEntityObjectResult_When_UpdateThrowsException()
+        {
+            var peristedPathModel = new PathModel() { };
+            var path = "path1";
+            var patch = new JsonPatchDocument<PathModel>();
+            patch.Add(x => x.Layout, Layout.FullWidth);
+            _pathService.Setup(x => x.Get(path)).ReturnsAsync(peristedPathModel);
+            _pathService.Setup(x => x.Update(peristedPathModel)).Throws(new InvalidOperationException());
+
+            var result = await _function.Run(CreateHttpRequest(patch), path);
+
+            Assert.IsInstanceOf<UnprocessableEntityObjectResult>(result);
         }
 
         [Test]

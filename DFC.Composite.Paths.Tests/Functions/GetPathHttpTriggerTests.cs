@@ -41,9 +41,10 @@ namespace DFC.Composite.Paths.Tests.Functions
             Assert.IsInstanceOf<BadRequestResult>(result);
         }
 
-        [TestCase("path1")]
-        public async Task Produces_OkObjectResult_When_PathIsValid(string path)
+        [Test]
+        public async Task Produces_OkObjectResult_When_PathIsValid()
         {
+            var path = "path1";
             var pathModel = new PathModel() { Path = path, TopNavigationText = "tnt1" };
             _pathService.Setup(x => x.Get(path)).ReturnsAsync(pathModel);
 
@@ -56,7 +57,7 @@ namespace DFC.Composite.Paths.Tests.Functions
         }
 
         [Test]
-        public async Task ProducesNotFoundResult_When_PathDoesNotExist()
+        public async Task ProducesNoContentResult_When_PathDoesNotExist()
         {
             var path = "path1";
             PathModel pathModel = null;
@@ -64,7 +65,7 @@ namespace DFC.Composite.Paths.Tests.Functions
 
             var result = await _function.Run(CreateHttpRequest(), path);
 
-            Assert.IsInstanceOf<NotFoundResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
         }
 
         private HttpRequest CreateHttpRequest()

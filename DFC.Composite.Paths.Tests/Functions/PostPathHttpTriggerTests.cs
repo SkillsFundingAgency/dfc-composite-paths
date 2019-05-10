@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using System;
 using System.Threading.Tasks;
 
 namespace DFC.Composite.Paths.Tests.Functions
@@ -36,15 +37,25 @@ namespace DFC.Composite.Paths.Tests.Functions
             _function = new PostPathHttpTrigger(_logger.Object, _loggerHelper.Object, _requestHelper.Object, _pathService.Object);
         }
 
+        [Test]
+        public async Task Produces_BadRequestObjectResult_When_NoPayloadDoesNotExist()
+        {
+            PathModel pathModel = null;
+
+            var result = await _function.Run(CreateHttpRequest(pathModel));
+
+            Assert.IsInstanceOf<BadRequestResult>(result);
+        }
+
         [TestCase("")]
         [TestCase(null)]
         public async Task Produces_BadRequestObjectResult_When_PathIsInvalid(string path)
         {
-            var pathModel = new PathModel();
-            pathModel.Path = path;
-            pathModel.Layout = Layout.SidebarLeft;
+            var newPathModel = new PathModel();
+            newPathModel.Path = path;
+            newPathModel.Layout = Layout.SidebarLeft;
 
-            var result = await _function.Run(CreateHttpRequest(pathModel));
+            var result = await _function.Run(CreateHttpRequest(newPathModel));
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
@@ -52,25 +63,39 @@ namespace DFC.Composite.Paths.Tests.Functions
         [TestCase(null)]
         public async Task Produces_BadRequestObjectResult_When_LayoutIsInvalid(Layout layout)
         {
-            var pathModel = new PathModel();
-            pathModel.Path = "path1";
-            pathModel.Layout = layout;
+            var newPathModel = new PathModel();
+            newPathModel.Path = "path1";
+            newPathModel.Layout = layout;
 
-            var result = await _function.Run(CreateHttpRequest(pathModel));
+            var result = await _function.Run(CreateHttpRequest(newPathModel));
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]
-        public async Task Produces_OkObjectResult_When_Valid()
+        public async Task Produces_CreatedResult_When_Valid()
         {
-            var pathModel = new PathModel();
-            pathModel.Path = "p1";
-            pathModel.Layout = Layout.SidebarLeft;
+            var newPathModel = new PathModel();
+            newPathModel.Path = "p1";
+            newPathModel.Layout = Layout.SidebarLeft;
+            _pathService.Setup(x => x.Register(It.IsAny<PathModel>())).ReturnsAsync(newPathModel);
 
-            var result = await _function.Run(CreateHttpRequest(pathModel));
+            var result = await _function.Run(CreateHttpRequest(newPathModel));
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.IsInstanceOf<CreatedResult>(result);
+        }
+
+        [Test]
+        public async Task Produces_UnprocessableEntityObjectResult_When_PathIsAlreadyRegistered()
+        {
+            var newPathModel = new PathModel();
+            newPathModel.Path = "p1";
+            newPathModel.Layout = Layout.SidebarLeft;
+            _pathService.Setup(x => x.Register(It.IsAny<PathModel>())).ThrowsAsync(new InvalidOperationException());
+
+            var result = await _function.Run(CreateHttpRequest(newPathModel));
+
+            Assert.IsInstanceOf<UnprocessableEntityObjectResult>(result);
         }
 
         private HttpRequest CreateHttpRequest(PathModel model)
@@ -78,12 +103,13 @@ namespace DFC.Composite.Paths.Tests.Functions
             var context = new DefaultHttpContext();
             var result = new DefaultHttpRequest(context);
 
-            var json = JsonConvert.SerializeObject(model);
-            result.Body = json.AsStream();
+            if (model != null)
+            {
+                var json = JsonConvert.SerializeObject(model);
+                result.Body = json.AsStream();
+            }
 
             return result;
         }
-
-
     }
 }

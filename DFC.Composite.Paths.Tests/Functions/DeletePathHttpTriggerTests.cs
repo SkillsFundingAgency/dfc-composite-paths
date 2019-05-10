@@ -42,14 +42,14 @@ namespace DFC.Composite.Paths.Tests.Functions
         }
 
         [TestCase("path1")]
-        public async Task Produces_NoContentResult_When_PathIsValid(string path)
+        public async Task Produces_OKContentResult_When_PathIsValid(string path)
         {
             var pathModel = new PathModel() { Path = path };
             _pathService.Setup(x => x.Get(path)).ReturnsAsync(pathModel);
 
             var result = await _function.Run(CreateHttpRequest(), path);
 
-            Assert.IsInstanceOf<NoContentResult>(result);
+            Assert.IsInstanceOf<OkResult>(result);
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace DFC.Composite.Paths.Tests.Functions
 
             var result = await _function.Run(CreateHttpRequest(), path);
 
-            Assert.IsInstanceOf<NotFoundResult>(result);
+            Assert.IsInstanceOf<NoContentResult>(result);
         }
 
         private HttpRequest CreateHttpRequest()
