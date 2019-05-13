@@ -22,13 +22,17 @@
         },
         "Environment": {
             "type": "string"
+        },
+        "SharedAppServicePlanName": {
+            "type": "string",
+            "defaultValue": ""
         }
     },
     "variables": {
         "ApiName": "[concat(parameters('ApimProductInstanceName'), '-paths')]",
-        "AppServiceAppInsightsName": "",
-        "AppServicePlanName": "",
-        "BuildingBlocksDfcBaseUrl": "",
+        "AppServiceAppInsightsName": "[concat('dfc-', parameters('Environment'), '-compui-paths-ai')]",
+        "AppServicePlanName": "[if(greater(length(parameters('SharedAppServicePlanName')), 0), parameters('SharedAppServicePlanName'), concat('dfc-', parameters('Environment'), '-compui-paths-asp'))]",
+        "BuildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
         "FunctionAppName": "[concat('dfc-', parameters('Environment'), '-compui-paths-fa')]"
     },
     "resources": [
