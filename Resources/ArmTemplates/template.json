@@ -87,7 +87,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[variables('FunctionAppName')[copyIndex()]]",
+            "name": "[variables('FunctionAppName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -97,7 +97,7 @@
                 },
                 "parameters": {
                     "appServiceName": {
-                        "value": "[variables('FunctionAppName')[copyIndex()]]"
+                        "value": "[variables('FunctionAppName')]"
                     },
                     "appServicePlanName": {
                         "value": "[variables('AppServicePlanName')]"
