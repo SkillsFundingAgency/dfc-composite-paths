@@ -21,7 +21,7 @@
             "value": "__CompositeUiSharedStorageAccountName__"
         },
         "Environment": {
-            "value": "__Release.EnvironmentName__"
+            "value": "__Release_EnvironmentName__"
         }
     }
 }
