@@ -21,7 +21,10 @@
             "value": "__CompositeUiSharedStorageAccountName__"
         },
         "Environment": {
-            "value": "__Release_EnvironmentName__"
+            "value": "__ReleaseEnvironmentName__",
+            "metadata": {
+                "comment": "Bug in tokenisation task prevents referencing Release.EnvironmentName directly.  https://github.com/TotalALM/VSTS-Tasks/issues/29"
+            }
         }
     }
 }
