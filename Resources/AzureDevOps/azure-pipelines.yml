@@ -28,7 +28,6 @@ jobs:
   - template: AzureDevOpsTemplates/Build/dfc-arm-build.yml@dfc-devops
     parameters:
       ArmTemplateRoot: $(ArmTemplateRoot)
-      TestArmTemplateScriptUrl: https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/NCSD-676-FixTestArmScriptNotThrowing/PSScripts/Test-ArmTemplate.ps1
   - template: AzureDevOpsTemplates/Build/dfc-dotnetcorefunctionapp-build-notests.yml@dfc-devops
     parameters:
       SolutionBaseName: $(SolutionBaseName)
