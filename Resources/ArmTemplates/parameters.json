@@ -9,7 +9,7 @@
             "value": "__ApimProductInstanceName__"
         },
         "ApimResourceGroup": {
-            "value": "__ApimResourceGroup__"
+            "value": "__SharedResourceGroupName__"
         },
         "ApimServiceName": {
             "value": "__ApimServiceName__"
@@ -21,7 +21,7 @@
             "value": "__CompositeUiSharedStorageAccountName__"
         },
         "Environment": {
-            "value": "__Environment__"
+            "value": "__Release.EnvironmentName__"
         }
     }
 }
