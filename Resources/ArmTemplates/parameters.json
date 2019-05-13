@@ -1,0 +1,27 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "ApimLoggerName": {
+            "value": "composite-ui-logger"
+        },
+        "ApimProductInstanceName": {
+            "value": "composite-ui"
+        },
+        "ApimResourceGroup": {
+            "value": "dfc-dev-shared-rg"
+        },
+        "ApimServiceName": {
+            "value": "dfc-dev-shared-apim"
+        },
+        "CompositeUiSharedResourceGroup": {
+            "value": "dfc-dev-compui-shared-rg"
+        },
+        "CompositeUiSharedStorageAccountName": {
+            "value": "dfcdevcompuisharedstr"
+        },
+        "Environment": {
+            "value": "FOO"
+        }
+    }
+}

@@ -1,4 +1,5 @@
 variables:
+    ArmTemplateRoot: '$(Build.SourcesDirectory)\Resources\ArmTemplates'  
     SolutionBaseName: 'DFC.Composite.Paths'
     BuildPlatform: 'any cpu'
     BuildConfiguration: 'release'
@@ -9,7 +10,7 @@ resources:
   - repository: dfc-devops
     type: github
     name: SkillsFundingAgency/dfc-devops
-    ref: refs/tags/v1.1.1
+    ref: refs/tags/v1.2.0
     endpoint: 'GitHub (ESFA)'
 
 jobs:
@@ -24,6 +25,9 @@ jobs:
     - visualstudio
 
   steps:
+  - template: AzureDevOpsTemplates/Build/dfc-arm-build.yml@dfc-devops
+    parameters:
+      ArmTemplateRoot: $(ArmTemplateRoot)
   - template: AzureDevOpsTemplates/Build/dfc-dotnetcorefunctionapp-build-notests.yml@dfc-devops
     parameters:
       SolutionBaseName: $(SolutionBaseName)
