@@ -3,25 +3,25 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "ApimLoggerName": {
-            "value": "__ApimLoggerName__"
+            "value": "composite-ui-logger"
         },
         "ApimProductInstanceName": {
-            "value": "__ApimProductInstanceName__"
+            "value": "composite-ui"
         },
         "ApimResourceGroup": {
-            "value": "__ApimResourceGroup__"
+            "value": "dfc-dev-shared-rg"
         },
         "ApimServiceName": {
-            "value": "__ApimServiceName__"
+            "value": "dfc-dev-shared-apim"
         },
         "CompositeUiSharedResourceGroup": {
-            "value": "__CompositeUiSharedResourceGroup__"
+            "value": "dfc-dev-compui-shared-rg"
         },
         "CompositeUiSharedStorageAccountName": {
-            "value": "__CompositeUiSharedStorageAccountName__"
+            "value": "dfcdevcompuisharedstr"
         },
         "Environment": {
-            "value": "__Environment__"
+            "value": "FOO"
         }
     }
 }
