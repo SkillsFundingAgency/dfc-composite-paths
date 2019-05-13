@@ -28,6 +28,9 @@
         },
         "SharedAppServicePlanName": {
             "value": "__SharedAppServicePlanName__"
+        },
+        "SharedAppServicePlanResourceGroup": {
+            "value": "__SharedResourceGroupName__"
         }
     }
 }

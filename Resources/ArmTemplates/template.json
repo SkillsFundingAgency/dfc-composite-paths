@@ -26,14 +26,20 @@
         "SharedAppServicePlanName": {
             "type": "string",
             "defaultValue": ""
+        },
+        "SharedAppServicePlanResourceGroup": {
+            "type": "string",
+            "defaultValue": ""
         }
     },
     "variables": {
         "ApiName": "[concat(parameters('ApimProductInstanceName'), '-paths')]",
-        "AppServiceAppInsightsName": "[concat('dfc-', parameters('Environment'), '-compui-paths-ai')]",
-        "AppServicePlanName": "[if(greater(length(parameters('SharedAppServicePlanName')), 0), parameters('SharedAppServicePlanName'), concat('dfc-', parameters('Environment'), '-compui-paths-asp'))]",
+        "AppServiceAppInsightsName": "[concat(variables('ResourcePrefix'), '-ai')]",
+        "AppServicePlanName": "[if(greater(length(parameters('SharedAppServicePlanName')), 0), parameters('SharedAppServicePlanName'), concat(variables('ResourcePrefix'), '-asp'))]",
+        "AppServicePlanResourceGroup": "[if(greater(length(parameters('SharedAppServicePlanResourceGroup')), 0), parameters('SharedAppServicePlanResourceGroup'), resourceGroup().name)]",
         "BuildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
-        "FunctionAppName": "[concat('dfc-', parameters('Environment'), '-compui-paths-fa')]"
+        "FunctionAppName": "[concat(variables('ResourcePrefix'), '-fa-')]",
+        "ResourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-compui-paths'))]"
     },
     "resources": [
         {
@@ -103,7 +109,7 @@
                         "value": "[variables('AppServicePlanName')]"
                     },
                     "appServicePlanResourceGroup": {
-                        "value": "[resourceGroup().name]"
+                        "value": "[variables('AppServicePlanResourceGroup')]"
                     },
                     "appServiceType": {
                         "value": "functionapp"
