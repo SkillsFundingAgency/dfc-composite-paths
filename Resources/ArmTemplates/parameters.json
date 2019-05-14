@@ -30,7 +30,7 @@
             "value": "__SharedAppServicePlanName__"
         },
         "SharedAppServicePlanResourceGroup": {
-            "value": "__SharedAppServicePlanResourceGroup__"
+            "value": "__CompositeUiSharedResourceGroup__"
         }
     }
 }
