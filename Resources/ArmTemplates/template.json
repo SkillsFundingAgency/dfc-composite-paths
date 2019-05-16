@@ -14,6 +14,22 @@
         "ApimServiceName": {
             "type": "string"
         },
+        "AseHostingEnvironmentName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "AseResourceGroup": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "AspSize": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "AspTier": {
+            "type": "string",
+            "defaultValue": ""
+        },
         "CompositeUiSharedResourceGroup": {
             "type": "string"
         },
@@ -87,6 +103,39 @@
                     },
                     "attachedService": {
                         "value": ""
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('AppServicePlanName')]",
+            "type": "Microsoft.Resources/deployments",
+            "condition": "[not(equals(parameters('SharedAppServicePlanName'), variables('AppServicePlanName')))]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'app-service-plan.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServicePlanName": {
+                        "value": "[variables('AppServicePlanName')]"
+                    },
+                    "aseHostingEnvironmentName": {
+                        "value": "[parameters('AseHostingEnvironmentName')]"
+                    },
+                    "aseResourceGroup": {
+                        "value": "[parameters('AseResourceGroup')]"
+                    },
+                    "aspSize": {
+                        "value": "[parameters('AspSize')]"
+                    },
+                    "aspInstances": {
+                        "value": 1
+                    },
+                    "nonASETier": {
+                        "value": "[parameters('AspTier')]"
                     }
                 }
             }

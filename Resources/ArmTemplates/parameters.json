@@ -14,6 +14,18 @@
         "ApimServiceName": {
             "value": "__ApimServiceName__"
         },
+        "AseHostingEnvironmentName": {
+            "value": "__AseHostingEnvironmentName__"
+        },
+        "AseResourceGroup": {
+            "value": "__AseResourceGroup__"
+        },
+        "AspSize": {
+            "value": "__AspSize__"
+        },
+        "AspTier": {
+            "value": "__AspTier__"
+        },
         "CompositeUiSharedResourceGroup": {
             "value": "__CompositeUiSharedResourceGroup__"
         },
