@@ -10,7 +10,7 @@ resources:
   - repository: dfc-devops
     type: github
     name: SkillsFundingAgency/dfc-devops
-    ref: refs/tags/v1.2.1
+    ref: refs/tags/v1.2.2
     endpoint: 'GitHub (ESFA)'
 
 jobs:
