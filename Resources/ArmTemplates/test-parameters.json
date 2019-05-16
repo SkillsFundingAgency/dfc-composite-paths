@@ -22,6 +22,12 @@
         },
         "Environment": {
             "value": "FOO"
+        },
+        "SharedAppServicePlanName": {
+            "value": "dfc-dev-compui-shared-asp"
+        },
+        "SharedAppServicePlanResourceGroup": {
+            "value": "dfc-dev-compui-shared-rg"
         }
     }
 }
