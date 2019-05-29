@@ -3,6 +3,7 @@ using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
@@ -14,11 +15,13 @@ namespace DFC.Composite.Paths.Storage.Cosmos
     {
         private readonly string _endpointUri;
         private readonly string _key;
+        private readonly string _partitionKey;
 
-        public CosmosDocumentStorage(string endpointUri, string key)
+        public CosmosDocumentStorage(string endpointUri, string key, string partitionKey)
         {
             _endpointUri = endpointUri;
             _key = key;
+            _partitionKey = partitionKey;
         }
 
         public async Task<string> Add<T>(string databaseId, string collectionId, T document)
@@ -46,7 +49,7 @@ namespace DFC.Composite.Paths.Storage.Cosmos
         {
             var client = await Init(databaseId, collectionId);
 
-            var link = UriFactory.CreateDocumentUri(databaseId, collectionId, documentId);
+            var link = UriFactory.CreateDocumentUri(databaseId, collectionId, documentId);            
             var readResponse = await client.ReadDocumentAsync<T>(link);
 
             return readResponse.Document;
@@ -56,7 +59,7 @@ namespace DFC.Composite.Paths.Storage.Cosmos
         {
             var client = await Init(databaseId, collectionId);
 
-            var queryOptions = new FeedOptions { MaxItemCount = int.MaxValue };
+            var queryOptions = new FeedOptions { MaxItemCount = int.MaxValue, EnableCrossPartitionQuery = true };
 
             IDocumentQuery<T> query = null;
             if (expression != null)
@@ -95,7 +98,7 @@ namespace DFC.Composite.Paths.Storage.Cosmos
             var client = await Init(databaseId, collectionId);
 
             var link = UriFactory.CreateDocumentUri(databaseId, collectionId, documentId);
-            await client.DeleteDocumentAsync(link);
+            await client.DeleteDocumentAsync(link, new RequestOptions() { PartitionKey = new PartitionKey(Undefined.Value) });
         }
 
         private async Task<DocumentClient> Init(string databaseId, string collectionId)
@@ -107,10 +110,14 @@ namespace DFC.Composite.Paths.Storage.Cosmos
             var client = new DocumentClient(new Uri(_endpointUri), _key);
             await client.CreateDatabaseIfNotExistsAsync(db);
 
-            //create document collection
+            //Specify the partition key definition
+            var pkDef = new PartitionKeyDefinition();
+            pkDef.Paths = new Collection<string>() { _partitionKey };
+
+            //create document collection withthe specified partition key definition
             var docCollection = await client.CreateDocumentCollectionIfNotExistsAsync(
                 UriFactory.CreateDatabaseUri(databaseId),
-                new DocumentCollection { Id = collectionId });
+                new DocumentCollection { Id = collectionId, PartitionKey = pkDef });
 
             return client;
         }
