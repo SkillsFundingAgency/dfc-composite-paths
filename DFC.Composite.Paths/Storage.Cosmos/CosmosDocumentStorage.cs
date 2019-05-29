@@ -22,6 +22,11 @@ namespace DFC.Composite.Paths.Storage.Cosmos
             _endpointUri = endpointUri;
             _key = key;
             _partitionKey = partitionKey;
+
+            if (!_partitionKey.StartsWith("/"))
+            {
+                _partitionKey = $"/{_partitionKey}";
+            }
         }
 
         public async Task<string> Add<T>(string databaseId, string collectionId, T document)
@@ -49,7 +54,7 @@ namespace DFC.Composite.Paths.Storage.Cosmos
         {
             var client = await Init(databaseId, collectionId);
 
-            var link = UriFactory.CreateDocumentUri(databaseId, collectionId, documentId);            
+            var link = UriFactory.CreateDocumentUri(databaseId, collectionId, documentId);
             var readResponse = await client.ReadDocumentAsync<T>(link);
 
             return readResponse.Document;
@@ -121,5 +126,6 @@ namespace DFC.Composite.Paths.Storage.Cosmos
 
             return client;
         }
+
     }
 }
