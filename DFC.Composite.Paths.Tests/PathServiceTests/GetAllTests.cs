@@ -23,10 +23,11 @@ namespace DFC.Composite.Paths.Tests.PathServiceTests
             _cosmosSettings = new CosmosSettings() { };
             _cosmosSettings.Uri = CosmosEndpointUri;
             _cosmosSettings.Key = CosmosKey;
+            _cosmosSettings.PartitionKey = CosmosPartitionKey;
             _cosmosSettings.DatabaseName = CosmosDatabaseName;
             _cosmosSettings.CollectionName = _collectionName;
 
-            _documentStorage = new CosmosDocumentStorage(CosmosEndpointUri, CosmosKey);
+            _documentStorage = new CosmosDocumentStorage(CosmosEndpointUri, CosmosKey, CosmosPartitionKey);
             _pathService = new PathService(_documentStorage, _cosmosSettings);
         }
 
