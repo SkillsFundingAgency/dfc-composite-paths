@@ -22,11 +22,6 @@ namespace DFC.Composite.Paths.Storage.Cosmos
             _endpointUri = endpointUri;
             _key = key;
             _partitionKey = partitionKey;
-
-            if (!_partitionKey.StartsWith("/"))
-            {
-                _partitionKey = $"/{_partitionKey}";
-            }
         }
 
         public async Task<string> Add<T>(string databaseId, string collectionId, T document)
