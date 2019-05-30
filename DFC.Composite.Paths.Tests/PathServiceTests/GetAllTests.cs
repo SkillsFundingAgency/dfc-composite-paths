@@ -11,24 +11,16 @@ namespace DFC.Composite.Paths.Tests.PathServiceTests
     [TestFixture]
     public class GetAllTests : PathServiceTestBase
     {
-        private string _collectionName = "getAll";
+        private readonly string _collectionName = "getAll";
 
         private IPathService _pathService;
         private IDocumentStorage _documentStorage;
-        private CosmosSettings _cosmosSettings;
-
+        
         [SetUp]
         public void SetUp()
         {
-            _cosmosSettings = new CosmosSettings() { };
-            _cosmosSettings.Uri = CosmosEndpointUri;
-            _cosmosSettings.Key = CosmosKey;
-            _cosmosSettings.PartitionKey = CosmosPartitionKey;
-            _cosmosSettings.DatabaseName = CosmosDatabaseName;
-            _cosmosSettings.CollectionName = _collectionName;
-
-            _documentStorage = new CosmosDocumentStorage(CosmosEndpointUri, CosmosKey, CosmosPartitionKey);
-            _pathService = new PathService(_documentStorage, _cosmosSettings);
+            _documentStorage = new CosmosDocumentStorage(new CosmosConnectionString(CosmosConnectionString), CosmosPartitionKey);
+            _pathService = new PathService(_documentStorage, CosmosDatabase, _collectionName);
         }
 
         [TearDown]
@@ -55,6 +47,5 @@ namespace DFC.Composite.Paths.Tests.PathServiceTests
             var paths = await _pathService.GetAll();
             Assert.AreEqual(pathCount, paths.Count());
         }
-
     }
 }
