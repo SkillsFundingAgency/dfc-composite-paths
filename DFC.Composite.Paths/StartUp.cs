@@ -1,5 +1,6 @@
 ﻿using DFC.Common.Standard.Logging;
 using DFC.Composite.Paths;
+using DFC.Composite.Paths.Common;
 using DFC.Composite.Paths.Services;
 using DFC.Composite.Paths.Storage;
 using DFC.Composite.Paths.Storage.Cosmos;
@@ -36,21 +37,15 @@ namespace DFC.Composite.Paths
 
         private void RegisterServices(IServiceCollection services, IConfiguration configuration)
         {
-            var cosmosSettings = new CosmosSettings()
-            {
-                Key = configuration["cosmosKey"],
-                Uri = configuration["cosmosUrl"],
-                DatabaseName = configuration["cosmosDatabase"],
-                CollectionName = configuration["cosmosCollection"],
-                PartitionKey = configuration["cosmosPartitionKey"]
-            };
-            services.AddSingleton(cosmosSettings);
+            var cosmosConnectionString = new CosmosConnectionString(configuration[Cosmos.CosmosConnectionString]);
+            var cosmosDatabase = configuration[Cosmos.CosmosDatabase];
+            var cosmosCollection = configuration[Cosmos.CosmosCollection];
+            var cosmosPartitionKey = configuration[Cosmos.CosmosPartitionKey];
 
-            services.AddTransient<IDocumentStorage>(x => new CosmosDocumentStorage(cosmosSettings.Uri, cosmosSettings.Key, cosmosSettings.PartitionKey));
-
+            services.AddTransient<IDocumentStorage>(x => new CosmosDocumentStorage(cosmosConnectionString, cosmosPartitionKey));
             services.AddTransient<IHttpRequestHelper, HttpRequestHelper>();
             services.AddTransient<ILoggerHelper, LoggerHelper>();
-            services.AddTransient<IPathService, PathService>();
+            services.AddScoped<IPathService, PathService>(sp => new PathService(sp.GetService<IDocumentStorage>(), cosmosDatabase, cosmosCollection));
             services.AddTransient<ISwaggerDocumentGenerator, SwaggerDocumentGenerator>();
         }
     }

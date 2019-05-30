@@ -13,14 +13,12 @@ namespace DFC.Composite.Paths.Storage.Cosmos
 {
     public class CosmosDocumentStorage : IDocumentStorage
     {
-        private readonly string _endpointUri;
-        private readonly string _key;
+        private readonly CosmosConnectionString _cosmosConnectionString;
         private readonly string _partitionKey;
 
-        public CosmosDocumentStorage(string endpointUri, string key, string partitionKey)
+        public CosmosDocumentStorage(CosmosConnectionString cosmosConnectionString, string partitionKey)
         {
-            _endpointUri = endpointUri;
-            _key = key;
+            _cosmosConnectionString = cosmosConnectionString;
             _partitionKey = partitionKey;
         }
 
@@ -107,7 +105,7 @@ namespace DFC.Composite.Paths.Storage.Cosmos
             db.Id = databaseId;
 
             //create db
-            var client = new DocumentClient(new Uri(_endpointUri), _key);
+            var client = new DocumentClient(_cosmosConnectionString.Endpoint, _cosmosConnectionString.AuthKey);
             await client.CreateDatabaseIfNotExistsAsync(db);
 
             //Specify the partition key definition

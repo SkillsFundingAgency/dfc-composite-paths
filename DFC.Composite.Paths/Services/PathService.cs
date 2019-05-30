@@ -1,6 +1,5 @@
 ﻿using DFC.Composite.Paths.Models;
 using DFC.Composite.Paths.Storage;
-using DFC.Composite.Paths.Storage.Cosmos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +10,14 @@ namespace DFC.Composite.Paths.Services
     public class PathService : IPathService
     {
         private readonly IDocumentStorage _storage;
-        private readonly CosmosSettings _cosmosSettings;
+        private readonly string _database;
+        private readonly string _collection;
 
-        public PathService(IDocumentStorage storage, CosmosSettings cosmosSettings)
+        public PathService(IDocumentStorage storage, string database, string collection)
         {
             _storage = storage;
-            _cosmosSettings = cosmosSettings;
+            _database = database;
+            _collection = collection;
         }
 
         public async Task Delete(string path)
@@ -24,13 +25,13 @@ namespace DFC.Composite.Paths.Services
             var pathDocument = await GetPath(path);
             if (pathDocument != null)
             {
-                await _storage.Delete(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, pathDocument.DocumentId.ToString());
+                await _storage.Delete(_database, _collection, pathDocument.DocumentId.ToString());
             }
         }
 
         public async Task<IEnumerable<PathModel>> GetAll()
         {
-            return await _storage.Search<PathModel>(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, null);
+            return await _storage.Search<PathModel>(_database, _collection, null);
         }
 
         public async Task<PathModel> Get(string path)
@@ -63,7 +64,7 @@ namespace DFC.Composite.Paths.Services
                 throw new InvalidOperationException($"A path with the name {model.Path} is already registered");
             }
 
-            await _storage.Add<PathModel>(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, model);
+            await _storage.Add<PathModel>(_database, _collection, model);
 
             return model;
         }
@@ -80,13 +81,13 @@ namespace DFC.Composite.Paths.Services
                 updateModel.DocumentId = currentModel.DocumentId;
                 updateModel.LastModifiedDate = currentDt;
 
-                await _storage.Update<PathModel>(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, currentModel.DocumentId.ToString(), updateModel);
+                await _storage.Update<PathModel>(_database, _collection, currentModel.DocumentId.ToString(), updateModel);
             }
         }
 
         private async Task<PathModel> GetPath(string path)
         {
-            var documents = await _storage.Search<PathModel>(_cosmosSettings.DatabaseName, _cosmosSettings.CollectionName, x => x.Path == path);
+            var documents = await _storage.Search<PathModel>(_database, _collection, x => x.Path == path);
             return documents.FirstOrDefault();
         }
     }
