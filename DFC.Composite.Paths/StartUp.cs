@@ -38,14 +38,14 @@ namespace DFC.Composite.Paths
         private void RegisterServices(IServiceCollection services, IConfiguration configuration)
         {
             var cosmosConnectionString = new CosmosConnectionString(configuration[Cosmos.CosmosConnectionString]);
-            var cosmosDatabase = configuration[Cosmos.CosmosDatabase];
-            var cosmosCollection = configuration[Cosmos.CosmosCollection];
+            var cosmosDatabaseId = configuration[Cosmos.CosmosDatabaseId];
+            var cosmosCollectionId = configuration[Cosmos.CosmosCollectionId];
             var cosmosPartitionKey = configuration[Cosmos.CosmosPartitionKey];
 
             services.AddTransient<IDocumentStorage>(x => new CosmosDocumentStorage(cosmosConnectionString, cosmosPartitionKey));
             services.AddTransient<IHttpRequestHelper, HttpRequestHelper>();
             services.AddTransient<ILoggerHelper, LoggerHelper>();
-            services.AddScoped<IPathService, PathService>(sp => new PathService(sp.GetService<IDocumentStorage>(), cosmosDatabase, cosmosCollection));
+            services.AddScoped<IPathService, PathService>(sp => new PathService(sp.GetService<IDocumentStorage>(), cosmosDatabaseId, cosmosCollectionId));
             services.AddTransient<ISwaggerDocumentGenerator, SwaggerDocumentGenerator>();
         }
     }

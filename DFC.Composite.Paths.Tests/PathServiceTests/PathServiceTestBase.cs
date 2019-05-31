@@ -21,7 +21,7 @@ namespace DFC.Composite.Paths.Tests.PathServiceTests
             var configurationRoot = builder.Build();
 
             CosmosConnectionString = configurationRoot[Cosmos.CosmosConnectionString];
-            CosmosDatabase = configurationRoot[Cosmos.CosmosDatabase];
+            CosmosDatabase = configurationRoot[Cosmos.CosmosDatabaseId];
             CosmosPartitionKey = configurationRoot[Cosmos.CosmosPartitionKey];
         }
 
