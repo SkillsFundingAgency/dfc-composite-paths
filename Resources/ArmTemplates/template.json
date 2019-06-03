@@ -189,7 +189,7 @@
                             },
                             {
                                 "name": "CosmosSettings__ConnectionString",
-                                "value": "[concat('AccountEndpoint=https://', parameters('CosmosDbAccount'), '.documents.azure.com:443/;AccountKey=', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('CosmosDbAccount')), '2015-04-08').primaryMasterKey, ';')]"
+                                "value": "[concat('AccountEndpoint=https://', parameters('CosmosDbAccount'), '.documents.azure.com:443/;AccountKey=', listKeys(resourceId(parameters('CompositeUiSharedResourceGroup'), parameters('CosmosDbAccount')), '2015-04-08').primaryMasterKey, ';')]"
                             },
                             {
                                 "name": "CosmosSettings__DatabaseId",
