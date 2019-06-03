@@ -20,6 +20,9 @@
         "CompositeUiSharedStorageAccountName": {
             "value": "dfcdevcompuisharedstr"
         },
+        "CosmosDbAccount": {
+            "value": "dfc-dev-compui-shared-cdb"
+        },
         "Environment": {
             "value": "FOO"
         },

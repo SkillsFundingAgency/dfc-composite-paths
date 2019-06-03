@@ -36,6 +36,9 @@
         "CompositeUiSharedStorageAccountName": {
             "type": "string"
         },
+        "CosmosDbAccount": {
+            "type": "string"
+        },
         "Environment": {
             "type": "string"
         },
@@ -54,6 +57,8 @@
         "AppServicePlanName": "[if(greater(length(parameters('SharedAppServicePlanName')), 0), parameters('SharedAppServicePlanName'), concat(variables('ResourcePrefix'), '-asp'))]",
         "AppServicePlanResourceGroup": "[if(greater(length(parameters('SharedAppServicePlanResourceGroup')), 0), parameters('SharedAppServicePlanResourceGroup'), resourceGroup().name)]",
         "BuildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
+        "CosmosPrimaryKey": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('CosmosDbAccount')), '2015-04-08').primaryMasterKey]",
+        "CosmosConnectionString": "[concat('AccountEndpoint=https://', parameters('CosmosDbAccount'), '.documents.azure.com:443/;AccountKey=', variables('CosmosPrimaryKey'), ';')]",
         "FunctionAppName": "[concat(variables('ResourcePrefix'), '-fa')]",
         "ResourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-compui-paths'))]"
     },
@@ -183,6 +188,22 @@
                             {
                                 "name": "AzureWebJobsStorage",
                                 "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('CompositeUiSharedStorageAccountName'),';AccountKey=',listKeys(resourceId(parameters('CompositeUiSharedResourceGroup'), 'Microsoft.Storage/storageAccounts', parameters('CompositeUiSharedStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
+                            },
+                            {
+                                "name": "CosmosSettings__ConnectionString",
+                                "value": "[variables('CosmosConnectionString')]"
+                            },
+                            {
+                                "name": "CosmosSettings__DatabaseId",
+                                "value": "composition"
+                            },
+                            {
+                                "name": "CosmosSettings__CollectionId",
+                                "value": "paths"
+                            },
+                            {
+                                "name": "CosmosSettings__PartitionKey",
+                                "value": "/path"
                             }
                         ]
                     }
