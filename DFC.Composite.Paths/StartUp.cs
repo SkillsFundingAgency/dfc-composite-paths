@@ -11,6 +11,7 @@ using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
+using System;
 
 [assembly: WebJobsStartup(typeof(StartUp))]
 namespace DFC.Composite.Paths
@@ -37,10 +38,10 @@ namespace DFC.Composite.Paths
 
         private void RegisterServices(IServiceCollection services, IConfiguration configuration)
         {
-            var cosmosConnectionString = new CosmosConnectionString(configuration[Cosmos.CosmosConnectionString]);
-            var cosmosDatabaseId = configuration[Cosmos.CosmosDatabaseId];
-            var cosmosCollectionId = configuration[Cosmos.CosmosCollectionId];
-            var cosmosPartitionKey = configuration[Cosmos.CosmosPartitionKey];
+            var cosmosConnectionString = new CosmosConnectionString(Environment.GetEnvironmentVariable(Cosmos.CosmosConnectionString));
+            var cosmosDatabaseId = Environment.GetEnvironmentVariable(Cosmos.CosmosDatabaseId);
+            var cosmosCollectionId = Environment.GetEnvironmentVariable(Cosmos.CosmosCollectionId);
+            var cosmosPartitionKey = Environment.GetEnvironmentVariable(Cosmos.CosmosPartitionKey);
 
             services.AddTransient<IDocumentStorage>(x => new CosmosDocumentStorage(cosmosConnectionString, cosmosPartitionKey));
             services.AddTransient<IHttpRequestHelper, HttpRequestHelper>();
