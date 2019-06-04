@@ -32,6 +32,9 @@
         "CompositeUiSharedStorageAccountName": {
             "value": "__CompositeUiSharedStorageAccountName__"
         },
+        "CosmosDbAccount": {
+            "value": "__CosmosDbAccount__"
+        },
         "Environment": {
             "value": "__ReleaseEnvironmentName__",
             "metadata": {

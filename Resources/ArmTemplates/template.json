@@ -36,6 +36,9 @@
         "CompositeUiSharedStorageAccountName": {
             "type": "string"
         },
+        "CosmosDbAccount": {
+            "type": "string"
+        },
         "Environment": {
             "type": "string"
         },
@@ -183,6 +186,22 @@
                             {
                                 "name": "AzureWebJobsStorage",
                                 "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('CompositeUiSharedStorageAccountName'),';AccountKey=',listKeys(resourceId(parameters('CompositeUiSharedResourceGroup'), 'Microsoft.Storage/storageAccounts', parameters('CompositeUiSharedStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
+                            },
+                            {
+                                "name": "CosmosSettings__ConnectionString",
+                                "value": "[concat('AccountEndpoint=https://', parameters('CosmosDbAccount'), '.documents.azure.com:443/;AccountKey=', listKeys(resourceId(parameters('CompositeUiSharedResourceGroup'), 'Microsoft.DocumentDB/databaseAccounts', parameters('CosmosDbAccount')), '2015-04-08').primaryMasterKey, ';')]"
+                            },
+                            {
+                                "name": "CosmosSettings__DatabaseId",
+                                "value": "composition"
+                            },
+                            {
+                                "name": "CosmosSettings__CollectionId",
+                                "value": "paths"
+                            },
+                            {
+                                "name": "CosmosSettings__PartitionKey",
+                                "value": "/path"
                             }
                         ]
                     }
