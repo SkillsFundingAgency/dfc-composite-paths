@@ -5,6 +5,7 @@ using DFC.Composite.Paths.Models;
 using DFC.Composite.Paths.Services;
 using DFC.HTTP.Standard;
 using DFC.Swagger.Standard.Annotations;
+using HtmlAgilityPack;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -12,6 +13,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -62,6 +64,32 @@ namespace DFC.Composite.Paths.Functions
             {
                 _loggerHelper.LogInformationMessage(_logger, correlationId, Message.ValidationFailed);
                 return new BadRequestObjectResult(body.ValidationResults);
+            }
+
+            if (!string.IsNullOrEmpty(body.Value.OfflineHtml))
+            {
+                var htmlDoc = new HtmlDocument();
+
+                htmlDoc.LoadHtml(body.Value.OfflineHtml);
+
+                if (htmlDoc.ParseErrors.Any())
+                {
+                    _loggerHelper.LogInformationMessage(_logger, correlationId, $"Request value for '{nameof(body.Value.OfflineHtml)}' contains malformed HTML");
+                    return new BadRequestResult();
+                }
+            }
+
+            if (!string.IsNullOrEmpty(body.Value.PhaseBannerHtml))
+            {
+                var htmlDoc = new HtmlDocument();
+
+                htmlDoc.LoadHtml(body.Value.PhaseBannerHtml);
+
+                if (htmlDoc.ParseErrors.Any())
+                {
+                    _loggerHelper.LogInformationMessage(_logger, correlationId, $"Request value for '{nameof(body.Value.PhaseBannerHtml)}' contains malformed HTML");
+                    return new BadRequestResult();
+                }
             }
 
             try
