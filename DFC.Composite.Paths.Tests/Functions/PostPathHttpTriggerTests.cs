@@ -60,18 +60,6 @@ namespace DFC.Composite.Paths.Tests.Functions
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
-        [TestCase(null)]
-        public async Task Produces_BadRequestObjectResult_When_LayoutIsInvalid(Layout layout)
-        {
-            var newPathModel = new PathModel();
-            newPathModel.Path = "path1";
-            newPathModel.Layout = layout;
-
-            var result = await _function.Run(CreateHttpRequest(newPathModel));
-
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        }
-
         [Test]
         public async Task Produces_CreatedResult_When_Valid()
         {
@@ -91,6 +79,35 @@ namespace DFC.Composite.Paths.Tests.Functions
             var newPathModel = new PathModel();
             newPathModel.Path = "p1";
             newPathModel.Layout = Layout.SidebarLeft;
+            _pathService.Setup(x => x.Register(It.IsAny<PathModel>())).ThrowsAsync(new InvalidOperationException());
+
+            var result = await _function.Run(CreateHttpRequest(newPathModel));
+
+            Assert.IsInstanceOf<UnprocessableEntityObjectResult>(result);
+        }
+
+        [TestCase(Layout.FullWidth)]
+        [TestCase(Layout.SidebarLeft)]
+        [TestCase(Layout.SidebarRight)]
+        public async Task Produces_UnprocessableEntityObjectResult_When_RegisteringLayoutWithExternalUrl(Layout layout)
+        {
+            var newPathModel = new PathModel();
+            newPathModel.Path = "p1";
+            newPathModel.Layout = layout;
+            newPathModel.ExternalURL = "http://www.google.com";
+            _pathService.Setup(x => x.Register(It.IsAny<PathModel>())).ThrowsAsync(new InvalidOperationException());
+
+            var result = await _function.Run(CreateHttpRequest(newPathModel));
+
+            Assert.IsInstanceOf<UnprocessableEntityObjectResult>(result);
+        }
+
+        [Test]
+        public async Task Produces_UnprocessableEntityObjectResult_When_RegisteringLayoutNoneWithNoneExternalUrl()
+        {
+            var newPathModel = new PathModel();
+            newPathModel.Path = "p1";
+            newPathModel.Layout = Layout.None;
             _pathService.Setup(x => x.Register(It.IsAny<PathModel>())).ThrowsAsync(new InvalidOperationException());
 
             var result = await _function.Run(CreateHttpRequest(newPathModel));

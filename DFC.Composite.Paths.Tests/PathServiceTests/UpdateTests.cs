@@ -62,6 +62,36 @@ namespace DFC.Composite.Paths.Tests.PathServiceTests
 
             Assert.AreNotEqual(DateTime.MinValue, modifiedPath.LastModifiedDate);
             Assert.Greater(lastModified, lastModifiedOriginal);
-        }        
+        }
+
+        [TestCase(Layout.FullWidth)]
+        [TestCase(Layout.SidebarLeft)]
+        [TestCase(Layout.SidebarRight)]
+        public async Task Should_AllowExternalUrlWithLayoutNoneOnly(Layout layout)
+        {
+            var newPath = Create(_path, layout);
+
+            await _pathService.Register(newPath);
+            var existingPath = await _pathService.Get(newPath.Path);
+            existingPath.ExternalURL = "http://www.google.com";
+            
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await _pathService.Update(existingPath));
+            Assert.AreEqual(Message.ExternalUrlMustUseLayoutNone, ex.Message);
+        }
+
+        [TestCase(Layout.FullWidth)]
+        [TestCase(Layout.SidebarLeft)]
+        [TestCase(Layout.SidebarRight)]
+        public async Task NonExternalUrls_ShouldNotUseLayoutNone(Layout layout)
+        {
+            var newPath = Create(_path, layout);
+
+            await _pathService.Register(newPath);
+            var existingPath = await _pathService.Get(newPath.Path);
+            existingPath.Layout = Layout.None;
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await _pathService.Update(existingPath));
+            Assert.AreEqual(Message.NonExternalUrlMustNotUseLayoutNone, ex.Message);
+        }
     }
 }

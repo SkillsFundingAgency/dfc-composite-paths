@@ -38,6 +38,7 @@ namespace DFC.Composite.Paths.Tests.PathServiceTests
             await _pathService.Register(newPath);
 
             var existingPath = await _pathService.Get(newPath.Path);
+
             Assert.IsNotNull(existingPath);
             Assert.AreEqual(newPath.Path, existingPath.Path);
             Assert.AreEqual(newPath.Layout, existingPath.Layout);
@@ -51,6 +52,7 @@ namespace DFC.Composite.Paths.Tests.PathServiceTests
             await _pathService.Register(newPath);
 
             var existingPath = await _pathService.Get(newPath.Path);
+
             Assert.AreNotEqual(DateTime.MinValue, existingPath.DateOfRegistration);
         }
 
@@ -62,6 +64,7 @@ namespace DFC.Composite.Paths.Tests.PathServiceTests
             await _pathService.Register(newPath);
 
             var existingPath = await _pathService.Get(newPath.Path);
+
             Assert.AreNotEqual(DateTime.MinValue, existingPath.LastModifiedDate);
         }
 
@@ -71,7 +74,29 @@ namespace DFC.Composite.Paths.Tests.PathServiceTests
             var newPath = Create(_path, Layout.FullWidth);
 
             await _pathService.Register(newPath);
+
             Assert.ThrowsAsync<InvalidOperationException>(async () => await _pathService.Register(newPath));
+        }
+
+        [TestCase(Layout.FullWidth)]
+        [TestCase(Layout.SidebarLeft)]
+        [TestCase(Layout.SidebarRight)]
+        public void Should_AllowExternalUrlWithLayoutNoneOnly(Layout layout)
+        {
+            var newPath = Create(_path, layout);
+            newPath.ExternalURL = "http://www.google.com";
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await _pathService.Register(newPath));
+            Assert.AreEqual(Message.ExternalUrlMustUseLayoutNone, ex.Message);
+        }
+
+        [Test]
+        public void NonExternalUrls_ShouldNotUseLayoutNone()
+        {
+            var newPath = Create(_path, Layout.None);
+
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await _pathService.Register(newPath));
+            Assert.AreEqual(Message.NonExternalUrlMustNotUseLayoutNone, ex.Message);
         }
     }
 }

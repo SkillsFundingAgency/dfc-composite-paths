@@ -1,4 +1,5 @@
-﻿using DFC.Composite.Paths.Models;
+﻿using DFC.Composite.Paths.Common;
+using DFC.Composite.Paths.Models;
 using DFC.Composite.Paths.Storage;
 using System;
 using System.Collections.Generic;
@@ -58,10 +59,12 @@ namespace DFC.Composite.Paths.Services
                 model.LastModifiedDate = currentDt;
             }
 
+            Validate(model);
+
             var existingPaths = await GetAll();
             if (existingPaths.Any(x => x.Path.ToLower() == model.Path.ToLower()))
             {
-                throw new InvalidOperationException($"A path with the name {model.Path} is already registered");
+                throw new InvalidOperationException(string.Format(Message.PathAlreadyExists, model.Path));
             }
 
             await _storage.Add<PathModel>(_database, _collection, model);
@@ -81,6 +84,8 @@ namespace DFC.Composite.Paths.Services
                 updateModel.DocumentId = currentModel.DocumentId;
                 updateModel.LastModifiedDate = currentDt;
 
+                Validate(updateModel);
+
                 await _storage.Update<PathModel>(_database, _collection, currentModel.DocumentId.ToString(), updateModel);
             }
         }
@@ -89,6 +94,18 @@ namespace DFC.Composite.Paths.Services
         {
             var documents = await _storage.Search<PathModel>(_database, _collection, x => x.Path == path);
             return documents.FirstOrDefault();
+        }
+
+        private void Validate(PathModel model)
+        {
+            if (!string.IsNullOrWhiteSpace(model.ExternalURL) && model.Layout != Layout.None)
+            {
+                throw new InvalidOperationException(Message.ExternalUrlMustUseLayoutNone);
+            }
+            if (string.IsNullOrWhiteSpace(model.ExternalURL) && model.Layout == Layout.None)
+            {
+                throw new InvalidOperationException(Message.NonExternalUrlMustNotUseLayoutNone);
+            }
         }
     }
 }
