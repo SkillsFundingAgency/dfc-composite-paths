@@ -1,8 +1,8 @@
-﻿using DFC.Composite.Paths.Common;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using DFC.Composite.Paths.Common;
 using DFC.Swagger.Standard.Annotations;
 using Newtonsoft.Json;
-using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace DFC.Composite.Paths.Models
 {
@@ -41,6 +41,10 @@ namespace DFC.Composite.Paths.Models
         [Example(Description = "<strong>Sorry this application is offline</strong>")]
         public string OfflineHtml { get; set; }
 
+        [Display(Description = "This property is used to store the HTML markup for the 'Phase Banner' if any")]
+        [Example(Description = "<strong>Alpha/Beta - This is a new service</strong>")]
+        public string PhaseBannerHtml { get; set; }
+
         [Display(Description = "Optional Url endpoint for the retrieval of an application sitemap.")]
         [Example(Description = "https://nationalcareeers.service.gov.uk/explore-careers/sitemap")]
         public string SitemapURL { get; set; }
@@ -48,6 +52,10 @@ namespace DFC.Composite.Paths.Models
         [Display(Description = "External Url endpoint.")]
         [Example(Description = "https://nationalcareeers.service.gov.uk/explore-careers")]
         public string ExternalURL { get; set; }
+
+        [Display(Description = "Optional Url endpoint for the retrieval of an application Robots.txt file.")]
+        [Example(Description = "https://nationalcareeers.service.gov.uk/explore-careers/robots.txt")]
+        public string RobotsURL { get; set; }
 
         [Display(Description = "UTC date and time the application was registered. This is auto generated.")]
         [Example(Description = "10:15:06 UTC")]
