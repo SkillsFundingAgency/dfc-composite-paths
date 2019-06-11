@@ -45,6 +45,10 @@ namespace DFC.Composite.Paths.Models
         [Example(Description = "https://nationalcareeers.service.gov.uk/explore-careers/sitemap")]
         public string SitemapURL { get; set; }
 
+        [Display(Description = "External Url endpoint.")]
+        [Example(Description = "https://nationalcareeers.service.gov.uk/explore-careers")]
+        public string ExternalURL { get; set; }
+
         [Display(Description = "UTC date and time the application was registered. This is auto generated.")]
         [Example(Description = "10:15:06 UTC")]
         public DateTime DateOfRegistration { get; set; }
