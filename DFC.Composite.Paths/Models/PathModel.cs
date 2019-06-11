@@ -1,8 +1,8 @@
-﻿using DFC.Composite.Paths.Common;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using DFC.Composite.Paths.Common;
 using DFC.Swagger.Standard.Annotations;
 using Newtonsoft.Json;
-using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace DFC.Composite.Paths.Models
 {
@@ -38,16 +38,20 @@ namespace DFC.Composite.Paths.Models
         public bool IsOnline { get; set; }
 
         [Display(Description = "If the application is marked as offline (IsOnline = false) then this text is displayed on any application path (or child path).")]
-        [Example(Description = "<strong>Alpha/Beta - This is a new service</strong>")]
+        [Example(Description = "<strong>Sorry this application is offline</strong>")]
         public string OfflineHtml { get; set; }
 
         [Display(Description = "This property is used to store the HTML markup for the 'Phase Banner' if any")]
-        [Example(Description = "<strong>Sorry this application is offline</strong>")]
+        [Example(Description = "<strong>Alpha/Beta - This is a new service</strong>")]
         public string PhaseBannerHtml { get; set; }
 
         [Display(Description = "Optional Url endpoint for the retrieval of an application sitemap.")]
         [Example(Description = "https://nationalcareeers.service.gov.uk/explore-careers/sitemap")]
         public string SitemapURL { get; set; }
+
+        [Display(Description = "External Url endpoint.")]
+        [Example(Description = "https://nationalcareeers.service.gov.uk/explore-careers")]
+        public string ExternalURL { get; set; }
 
         [Display(Description = "Optional Url endpoint for the retrieval of an application Robots.txt file.")]
         [Example(Description = "https://nationalcareeers.service.gov.uk/explore-careers/robots.txt")]
