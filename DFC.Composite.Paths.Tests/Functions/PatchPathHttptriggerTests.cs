@@ -14,6 +14,9 @@ using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DFC.Composite.Paths.Tests.Functions
@@ -78,11 +81,49 @@ namespace DFC.Composite.Paths.Tests.Functions
             Assert.IsInstanceOf<BadRequestResult>(result);
         }
 
+        [TestCase("<div></span>")]
+        [TestCase("<strong></div>")]
+        public async Task Produces_BadRequestResult_When_OfflineHtmlIsMalformed(string offlineHtml)
+        {
+            var path = "path1";
+            var peristedPathModel = new PathModel() { Path = path };
+            var patch = new JsonPatchDocument<PathModel>();
+            patch.Add(x => x.OfflineHtml, offlineHtml);
+            _pathService.Setup(x => x.Get(path)).ReturnsAsync(peristedPathModel);
+
+            var result = await _function.Run(CreateHttpRequest(patch), path);
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+
+            var typedResult = result as BadRequestObjectResult;
+            var validationResult = typedResult.Value as List<ValidationResult>;
+            Assert.Contains(string.Format(Message.MalformedHtml, nameof(PathModel.OfflineHtml)), validationResult.Select(x => x.ErrorMessage).ToList());
+        }
+
+        [TestCase("<div></span>")]
+        [TestCase("<strong></div>")]
+        public async Task Produces_BadRequestResult_When_PhaseBannerHtmlIsMalformed(string phaseBannerHtml)
+        {
+            var path = "path1";
+            var peristedPathModel = new PathModel() { Path = path };
+            var patch = new JsonPatchDocument<PathModel>();
+            patch.Add(x => x.PhaseBannerHtml, phaseBannerHtml);
+            _pathService.Setup(x => x.Get(path)).ReturnsAsync(peristedPathModel);
+
+            var result = await _function.Run(CreateHttpRequest(patch), path);
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+
+            var typedResult = result as BadRequestObjectResult;
+            var validationResult = typedResult.Value as List<ValidationResult>;
+            Assert.Contains(string.Format(Message.MalformedHtml, nameof(PathModel.PhaseBannerHtml)), validationResult.Select(x => x.ErrorMessage).ToList());
+        }
+
         [Test]
         public async Task Produces_UnprocessableEntityObjectResult_When_UpdateThrowsException()
         {
-            var peristedPathModel = new PathModel() { };
             var path = "path1";
+            var peristedPathModel = new PathModel() { Path = path };
             var patch = new JsonPatchDocument<PathModel>();
             patch.Add(x => x.Layout, Layout.FullWidth);
             _pathService.Setup(x => x.Get(path)).ReturnsAsync(peristedPathModel);

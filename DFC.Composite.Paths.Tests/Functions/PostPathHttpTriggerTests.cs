@@ -13,6 +13,9 @@ using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DFC.Composite.Paths.Tests.Functions
@@ -49,6 +52,21 @@ namespace DFC.Composite.Paths.Tests.Functions
 
         [TestCase("")]
         [TestCase(null)]
+        public async Task Produces_BadRequestObjectResult_When_PathIsMissing(string path)
+        {
+            var newPathModel = new PathModel();
+            newPathModel.Path = path;
+            newPathModel.Layout = Layout.SidebarLeft;
+
+            var result = await _function.Run(CreateHttpRequest(newPathModel));
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+
+            var typedResult = result as BadRequestObjectResult;
+            var validationResult = typedResult.Value as List<ValidationResult>;
+            Assert.Contains(string.Format(Message.FieldIsRequired, nameof(PathModel.Path)), validationResult.Select(x => x.ErrorMessage).ToList());
+        }
+
         [TestCase("$path")]
         [TestCase("&path")]
         public async Task Produces_BadRequestObjectResult_When_PathIsInvalid(string path)
@@ -60,6 +78,46 @@ namespace DFC.Composite.Paths.Tests.Functions
             var result = await _function.Run(CreateHttpRequest(newPathModel));
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
+
+            var typedResult = result as BadRequestObjectResult;
+            var validationResult = typedResult.Value as List<ValidationResult>;
+            Assert.Contains(Message.PathIsInvalid, validationResult.Select(x => x.ErrorMessage).ToList());
+        }
+
+        [TestCase("<div></span>")]
+        [TestCase("<strong></div>")]
+        public async Task Produces_BadRequestObjectResult_When_OfflineHtmlIsInvalid(string offlineHtml)
+        {
+            var newPathModel = new PathModel();
+            newPathModel.OfflineHtml = offlineHtml;
+            newPathModel.Path = "path1";
+            newPathModel.Layout = Layout.SidebarLeft;
+
+            var result = await _function.Run(CreateHttpRequest(newPathModel));
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+
+            var typedResult = result as BadRequestObjectResult;
+            var validationResult = typedResult.Value as List<ValidationResult>;
+            Assert.Contains(string.Format(Message.MalformedHtml, nameof(PathModel.OfflineHtml)), validationResult.Select(x => x.ErrorMessage).ToList());
+        }
+
+        [TestCase("<div></span>")]
+        [TestCase("<strong></div>")]
+        public async Task Produces_BadRequestObjectResult_When_PhaseBannerHtmlIsInvalid(string phaseBannerHtml)
+        {
+            var newPathModel = new PathModel();
+            newPathModel.PhaseBannerHtml = phaseBannerHtml;
+            newPathModel.Path = "path1";
+            newPathModel.Layout = Layout.SidebarLeft;
+
+            var result = await _function.Run(CreateHttpRequest(newPathModel));
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+
+            var typedResult = result as BadRequestObjectResult;
+            var validationResult = typedResult.Value as List<ValidationResult>;
+            Assert.Contains(string.Format(Message.MalformedHtml, nameof(PathModel.PhaseBannerHtml)), validationResult.Select(x => x.ErrorMessage).ToList());
         }
 
         [Test]

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text.RegularExpressions;
 using DFC.Composite.Paths.Common;
 using DFC.Swagger.Standard.Annotations;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
 
 namespace DFC.Composite.Paths.Models
@@ -76,7 +78,31 @@ namespace DFC.Composite.Paths.Models
 
             if (!pathRegex.IsMatch(Path))
             {
-                result.Add(new ValidationResult(Message.PathIsInvalid, new string[] { "Path" }));
+                result.Add(new ValidationResult(Message.PathIsInvalid, new string[] { nameof(Path) }));
+            }
+
+            if (!string.IsNullOrEmpty(OfflineHtml))
+            {
+                var htmlDoc = new HtmlDocument();
+
+                htmlDoc.LoadHtml(OfflineHtml);
+
+                if (htmlDoc.ParseErrors.Any())
+                {
+                    result.Add(new ValidationResult(string.Format(Message.MalformedHtml, nameof(OfflineHtml)), new string[] { nameof(OfflineHtml) }));
+                }
+            }
+
+            if (!string.IsNullOrEmpty(PhaseBannerHtml))
+            {
+                var htmlDoc = new HtmlDocument();
+
+                htmlDoc.LoadHtml(PhaseBannerHtml);
+
+                if (htmlDoc.ParseErrors.Any())
+                {
+                    result.Add(new ValidationResult(string.Format(Message.MalformedHtml, nameof(PhaseBannerHtml), new string[] { nameof(PhaseBannerHtml) })));
+                }
             }
 
             return result;
