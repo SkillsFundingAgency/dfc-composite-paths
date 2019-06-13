@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -82,6 +83,13 @@ namespace DFC.Composite.Paths.Functions
             try
             {
                 pathPatch.ApplyTo(currentPath);
+                var validationResults = currentPath.Validate(new ValidationContext(currentPath));
+
+                if (validationResults.Any())
+                {
+                    _loggerHelper.LogInformationMessage(_logger, correlationId, Message.ValidationFailed);
+                    return new BadRequestObjectResult(validationResults);
+                }
             }
             catch (Exception ex)
             {

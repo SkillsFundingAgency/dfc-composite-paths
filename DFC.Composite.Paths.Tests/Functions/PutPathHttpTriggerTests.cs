@@ -13,6 +13,9 @@ using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DFC.Composite.Paths.Tests.Functions
@@ -46,6 +49,43 @@ namespace DFC.Composite.Paths.Tests.Functions
             var result = await _function.Run(CreateHttpRequest(updateToModel), path);
 
             Assert.IsInstanceOf<BadRequestResult>(result);
+        }
+
+
+        [TestCase("<div></span>")]
+        [TestCase("<strong></div>")]
+        public async Task Produces_BadRequestObjectResult_When_OfflineHtmlIsInvalid(string offlineHtml)
+        {
+            var updateToModel = new PathModel();
+            updateToModel.OfflineHtml = offlineHtml;
+            updateToModel.Path = "path1";
+            updateToModel.Layout = Layout.SidebarLeft;
+
+            var result = await _function.Run(CreateHttpRequest(updateToModel), updateToModel.Path);
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+
+            var typedResult = result as BadRequestObjectResult;
+            var validationResult = typedResult.Value as List<ValidationResult>;
+            Assert.Contains(string.Format(Message.MalformedHtml, nameof(PathModel.OfflineHtml)), validationResult.Select(x => x.ErrorMessage).ToList());
+        }
+
+        [TestCase("<div></span>")]
+        [TestCase("<strong></div>")]
+        public async Task Produces_BadRequestObjectResult_When_PhaseBannerHtmlIsInvalid(string phaseBannerHtml)
+        {
+            var updateToModel = new PathModel();
+            updateToModel.PhaseBannerHtml = phaseBannerHtml;
+            updateToModel.Path = "path1";
+            updateToModel.Layout = Layout.SidebarLeft;
+
+            var result = await _function.Run(CreateHttpRequest(updateToModel), updateToModel.Path);
+
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+
+            var typedResult = result as BadRequestObjectResult;
+            var validationResult = typedResult.Value as List<ValidationResult>;
+            Assert.Contains(string.Format(Message.MalformedHtml, nameof(PathModel.PhaseBannerHtml)), validationResult.Select(x => x.ErrorMessage).ToList());
         }
 
         [Test]

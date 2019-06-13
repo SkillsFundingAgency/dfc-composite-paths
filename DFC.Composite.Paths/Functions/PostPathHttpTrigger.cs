@@ -62,34 +62,8 @@ namespace DFC.Composite.Paths.Functions
 
             if (!body.IsValid)
             {
-                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.ValidationFailed);
+                _loggerHelper.LogInformationMessage(_logger, correlationId, string.Concat(Message.ValidationFailed, " ", body.ValidationResults));
                 return new BadRequestObjectResult(body.ValidationResults);
-            }
-
-            if (!string.IsNullOrEmpty(body.Value.OfflineHtml))
-            {
-                var htmlDoc = new HtmlDocument();
-
-                htmlDoc.LoadHtml(body.Value.OfflineHtml);
-
-                if (htmlDoc.ParseErrors.Any())
-                {
-                    _loggerHelper.LogInformationMessage(_logger, correlationId, $"Request value for '{nameof(body.Value.OfflineHtml)}' contains malformed HTML");
-                    return new BadRequestResult();
-                }
-            }
-
-            if (!string.IsNullOrEmpty(body.Value.PhaseBannerHtml))
-            {
-                var htmlDoc = new HtmlDocument();
-
-                htmlDoc.LoadHtml(body.Value.PhaseBannerHtml);
-
-                if (htmlDoc.ParseErrors.Any())
-                {
-                    _loggerHelper.LogInformationMessage(_logger, correlationId, $"Request value for '{nameof(body.Value.PhaseBannerHtml)}' contains malformed HTML");
-                    return new BadRequestResult();
-                }
             }
 
             try
