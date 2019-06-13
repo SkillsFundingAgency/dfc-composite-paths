@@ -49,6 +49,8 @@ namespace DFC.Composite.Paths.Tests.Functions
 
         [TestCase("")]
         [TestCase(null)]
+        [TestCase("$path")]
+        [TestCase("&path")]
         public async Task Produces_BadRequestObjectResult_When_PathIsInvalid(string path)
         {
             var newPathModel = new PathModel();

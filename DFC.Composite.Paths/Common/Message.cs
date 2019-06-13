@@ -2,6 +2,7 @@
 {
     public class Message
     {
+        public const string PathIsInvalid = "Path is invalid";
         public const string PathDoesNotExist = "Path Does Not Exist";
         public const string PayloadMalformed = "Payload is malformed";
         public const string ValidationFailed = "Validation Failed";

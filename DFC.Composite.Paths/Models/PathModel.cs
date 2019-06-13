@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 using DFC.Composite.Paths.Common;
 using DFC.Swagger.Standard.Annotations;
 using Newtonsoft.Json;
 
 namespace DFC.Composite.Paths.Models
 {
-    public class PathModel
+    public class PathModel : IValidatableObject
     {
 
         [Display(Description = "Unique document identifier. This is auto generated")]
@@ -17,6 +19,7 @@ namespace DFC.Composite.Paths.Models
         [Display(Description = "The path of the application. This should match the url value immediately after the domain. i.e. https://nationalcareeers.service.gov.uk/explore-careers.")]
         [Example(Description = "explore-careers")]
         [Required]
+        [MaxLength(100)]
         public string Path { get; set; }
 
         [Display(Description = "Text value that appears on the Top Navigation section of the National Careers Service website. If this value is NOT present no menu option will be displayed.")]
@@ -64,5 +67,19 @@ namespace DFC.Composite.Paths.Models
         [Display(Description = "UTC date and time of when the application was last updated. This is auto generated.")]
         [Example(Description = "10:15:06 UTC")]
         public DateTime LastModifiedDate { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            var result = new List<ValidationResult>();
+
+            var pathRegex = new Regex(RegularExpressions.Path);
+
+            if (!pathRegex.IsMatch(Path))
+            {
+                result.Add(new ValidationResult(Message.PathIsInvalid, new string[] { "Path" }));
+            }
+
+            return result;
+        }
     }
 }
