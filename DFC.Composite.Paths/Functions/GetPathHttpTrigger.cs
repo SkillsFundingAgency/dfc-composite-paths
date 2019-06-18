@@ -57,7 +57,7 @@ namespace DFC.Composite.Paths.Functions
                 return new BadRequestResult();
             }
 
-            _loggerHelper.LogInformationMessage(_logger, correlationId, $"Attempting to get path {path}'");
+            _loggerHelper.LogInformationMessage(_logger, correlationId, $"Attempting to get path {path}");
             var pathModel = await _pathService.Get(path);
 
             if (pathModel == null)

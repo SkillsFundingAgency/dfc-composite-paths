@@ -55,7 +55,7 @@ namespace DFC.Composite.Paths.Functions
                 return new BadRequestResult();
             }
 
-            _loggerHelper.LogInformationMessage(_logger, correlationId, $"Attempting to get path {path}'");
+            _loggerHelper.LogInformationMessage(_logger, correlationId, $"Attempting to get path {path}");
             var pathModel = await _pathService.Get(path);
 
             if (pathModel == null)
@@ -64,7 +64,7 @@ namespace DFC.Composite.Paths.Functions
                 return new NoContentResult();
             }
 
-            _loggerHelper.LogInformationMessage(_logger, correlationId, $"Attempting to delete path {path}'");
+            _loggerHelper.LogInformationMessage(_logger, correlationId, $"Attempting to delete path {path}");
             await _pathService.Delete(path);
 
             _loggerHelper.LogMethodExit(_logger);

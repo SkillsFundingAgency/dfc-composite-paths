@@ -83,7 +83,7 @@ namespace DFC.Composite.Paths.Functions
 
             try
             {
-                _loggerHelper.LogInformationMessage(_logger, correlationId, $"Attempting to apply patch to {path}'");
+                _loggerHelper.LogInformationMessage(_logger, correlationId, $"Attempting to apply patch to {path}");
                 pathPatch.ApplyTo(currentPath);
                 var validationResults = currentPath.Validate(new ValidationContext(currentPath));
 
@@ -101,7 +101,7 @@ namespace DFC.Composite.Paths.Functions
 
             try
             {
-                _loggerHelper.LogInformationMessage(_logger, correlationId, $"Attempting to update path {path}'");
+                _loggerHelper.LogInformationMessage(_logger, correlationId, $"Attempting to update path {path}");
                 await _pathService.Update(currentPath);
                 _loggerHelper.LogMethodExit(_logger);
                 return new OkObjectResult(currentPath);
