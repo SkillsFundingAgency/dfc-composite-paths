@@ -68,6 +68,7 @@ namespace DFC.Composite.Paths.Functions
 
             try
             {
+                _loggerHelper.LogInformationMessage(_logger, correlationId, "Attempting to register path");
                 var registeredPath = await _pathService.Register(body.Value);
                 _loggerHelper.LogMethodExit(_logger);
                 return new CreatedResult(registeredPath.Path, registeredPath);

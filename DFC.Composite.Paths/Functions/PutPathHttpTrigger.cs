@@ -70,6 +70,7 @@ namespace DFC.Composite.Paths.Functions
                 return new BadRequestObjectResult(body.ValidationResults);
             }
 
+            _loggerHelper.LogInformationMessage(_logger, correlationId, $"Attempting to get path for {path}");
             var currentPath = await _pathService.Get(path);
             if (currentPath == null)
             {
@@ -79,6 +80,7 @@ namespace DFC.Composite.Paths.Functions
 
             try
             {
+                _loggerHelper.LogInformationMessage(_logger, correlationId, $"Attempting to get update path for {path}");
                 await _pathService.Update(body.Value);
                 _loggerHelper.LogMethodExit(_logger);
                 return new OkResult();
