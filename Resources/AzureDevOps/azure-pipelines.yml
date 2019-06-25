@@ -19,7 +19,7 @@ jobs:
 - job: BuildDotNetStandard
   displayName: Build-DotNetStandard
   pool:
-    name: Continuous Integration 02 - SSD - 160ACU
+    name: DAS - Continuous Deployment
     demands:
     - msbuild
     - visualstudio
