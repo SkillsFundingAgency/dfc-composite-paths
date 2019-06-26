@@ -10,7 +10,7 @@ resources:
   - repository: dfc-devops
     type: github
     name: SkillsFundingAgency/dfc-devops
-    ref: refs/heads/NCSD-888-AddSonarCloudBuild
+    ref: refs/tags/v1.5.0
     endpoint: 'GitHub (ESFA)'
 
 jobs:
