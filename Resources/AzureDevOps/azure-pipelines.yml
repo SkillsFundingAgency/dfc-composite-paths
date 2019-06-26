@@ -10,7 +10,7 @@ resources:
   - repository: dfc-devops
     type: github
     name: SkillsFundingAgency/dfc-devops
-    ref: refs/tags/v1.2.2
+    ref: refs/tags/v1.5.0
     endpoint: 'GitHub (ESFA)'
 
 jobs:
@@ -19,7 +19,7 @@ jobs:
 - job: BuildDotNetStandard
   displayName: Build-DotNetStandard
   pool:
-    name: Continuous Integration 02 - SSD - 160ACU
+    name: DAS - Continuous Deployment
     demands:
     - msbuild
     - visualstudio
@@ -28,7 +28,7 @@ jobs:
   - template: AzureDevOpsTemplates/Build/dfc-arm-build.yml@dfc-devops
     parameters:
       ArmTemplateRoot: $(ArmTemplateRoot)
-  - template: AzureDevOpsTemplates/Build/dfc-dotnetcorefunctionapp-build-notests.yml@dfc-devops
+  - template: AzureDevOpsTemplates/Build/dfc-dotnetcore-build-sonar.yml@dfc-devops
     parameters:
       SolutionBaseName: $(SolutionBaseName)
       BuildPlatform: $(BuildPlatform)
