@@ -1,13 +1,13 @@
-﻿using Microsoft.Azure.Documents;
-using Microsoft.Azure.Documents.Client;
-using Microsoft.Azure.Documents.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.Azure.Documents;
+using Microsoft.Azure.Documents.Client;
+using Microsoft.Azure.Documents.Linq;
 
 namespace DFC.Composite.Paths.Storage.Cosmos
 {
@@ -15,21 +15,28 @@ namespace DFC.Composite.Paths.Storage.Cosmos
     {
         private readonly CosmosConnectionString _cosmosConnectionString;
         private readonly string _partitionKey;
+        private readonly string _databaseId;
+        private readonly string _collectionId;
 
-        public CosmosDocumentStorage(CosmosConnectionString cosmosConnectionString, string partitionKey)
+        private readonly DocumentClient _documentClient;
+
+        public CosmosDocumentStorage(CosmosConnectionString cosmosConnectionString, string partitionKey, string databaseId, string collectionId)
         {
             _cosmosConnectionString = cosmosConnectionString;
             _partitionKey = partitionKey;
+            _databaseId = databaseId;
+            _collectionId = collectionId;
+
+            _documentClient = Init(_databaseId, _collectionId).Result;
         }
 
-        public async Task<string> Add<T>(string databaseId, string collectionId, T document)
+        public async Task<string> Add<T>(T document)
         {
-            var client = await Init(databaseId, collectionId);
             string result = null;
 
             try
             {
-                var documentResponse = await client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(databaseId, collectionId), document);
+                var documentResponse = await _documentClient.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(_databaseId, _collectionId), document);
                 result = documentResponse.Resource.Id;
             }
             catch (DocumentClientException dex)
@@ -43,34 +50,30 @@ namespace DFC.Composite.Paths.Storage.Cosmos
             return result;
         }
 
-        public async Task<T> Get<T>(string databaseId, string collectionId, string documentId)
+        public async Task<T> Get<T>(string documentId)
         {
-            var client = await Init(databaseId, collectionId);
-
-            var link = UriFactory.CreateDocumentUri(databaseId, collectionId, documentId);
-            var readResponse = await client.ReadDocumentAsync<T>(link);
+            var link = UriFactory.CreateDocumentUri(_databaseId, _collectionId, documentId);
+            var readResponse = await _documentClient.ReadDocumentAsync<T>(link);
 
             return readResponse.Document;
         }
 
-        public async Task<IEnumerable<T>> Search<T>(string databaseId, string collectionId, Expression<Func<T, bool>> expression)
+        public async Task<IEnumerable<T>> Search<T>(Expression<Func<T, bool>> expression)
         {
-            var client = await Init(databaseId, collectionId);
-
             var queryOptions = new FeedOptions { MaxItemCount = int.MaxValue, EnableCrossPartitionQuery = true };
 
-            IDocumentQuery<T> query = null;
+            IDocumentQuery<T> query;
             if (expression != null)
             {
-                query = client.CreateDocumentQuery<T>(
-                    UriFactory.CreateDocumentCollectionUri(databaseId, collectionId), queryOptions)
+                query = _documentClient.CreateDocumentQuery<T>(
+                    UriFactory.CreateDocumentCollectionUri(_databaseId, _collectionId), queryOptions)
                     .Where(expression)
                     .AsDocumentQuery();
             }
             else
             {
-                query = client.CreateDocumentQuery<T>(
-                    UriFactory.CreateDocumentCollectionUri(databaseId, collectionId), queryOptions)
+                query = _documentClient.CreateDocumentQuery<T>(
+                    UriFactory.CreateDocumentCollectionUri(_databaseId, _collectionId), queryOptions)
                     .AsDocumentQuery();
             }
 
@@ -83,37 +86,37 @@ namespace DFC.Composite.Paths.Storage.Cosmos
             return results;
         }
 
-        public async Task Update<T>(string databaseId, string collectionId, string documentId, T document)
+        public async Task Update<T>(string documentId, T document)
         {
-            var client = await Init(databaseId, collectionId);
-
-            var link = UriFactory.CreateDocumentUri(databaseId, collectionId, documentId);
-            await client.ReplaceDocumentAsync(link, document);
+            var link = UriFactory.CreateDocumentUri(_databaseId, _collectionId, documentId);
+            await _documentClient.ReplaceDocumentAsync(link, document);
         }
 
-        public async Task Delete(string databaseId, string collectionId, string documentId)
+        public async Task Delete(string documentId)
         {
-            var client = await Init(databaseId, collectionId);
-
-            var link = UriFactory.CreateDocumentUri(databaseId, collectionId, documentId);
-            await client.DeleteDocumentAsync(link, new RequestOptions() { PartitionKey = new PartitionKey(Undefined.Value) });
+            var link = UriFactory.CreateDocumentUri(_databaseId, _collectionId, documentId);
+            await _documentClient.DeleteDocumentAsync(link, new RequestOptions() { PartitionKey = new PartitionKey(Undefined.Value) });
         }
 
         private async Task<DocumentClient> Init(string databaseId, string collectionId)
         {
-            var db = new Database();
-            db.Id = databaseId;
+            var db = new Database
+            {
+                Id = databaseId
+            };
 
             //create db
             var client = new DocumentClient(_cosmosConnectionString.Endpoint, _cosmosConnectionString.AuthKey);
             await client.CreateDatabaseIfNotExistsAsync(db);
 
             //Specify the partition key definition
-            var pkDef = new PartitionKeyDefinition();
-            pkDef.Paths = new Collection<string>() { _partitionKey };
+            var pkDef = new PartitionKeyDefinition
+            {
+                Paths = new Collection<string>() { _partitionKey }
+            };
 
-            //create document collection withthe specified partition key definition
-            var docCollection = await client.CreateDocumentCollectionIfNotExistsAsync(
+            //create document collection with the specified partition key definition
+            _ = await client.CreateDocumentCollectionIfNotExistsAsync(
                 UriFactory.CreateDatabaseUri(databaseId),
                 new DocumentCollection { Id = collectionId, PartitionKey = pkDef });
 

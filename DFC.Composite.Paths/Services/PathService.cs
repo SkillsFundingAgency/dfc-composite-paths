@@ -1,24 +1,20 @@
-﻿using DFC.Composite.Paths.Common;
-using DFC.Composite.Paths.Models;
-using DFC.Composite.Paths.Storage;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DFC.Composite.Paths.Common;
+using DFC.Composite.Paths.Models;
+using DFC.Composite.Paths.Storage;
 
 namespace DFC.Composite.Paths.Services
 {
     public class PathService : IPathService
     {
         private readonly IDocumentStorage _storage;
-        private readonly string _database;
-        private readonly string _collection;
 
-        public PathService(IDocumentStorage storage, string database, string collection)
+        public PathService(IDocumentStorage storage)
         {
             _storage = storage;
-            _database = database;
-            _collection = collection;
         }
 
         public async Task Delete(string path)
@@ -26,13 +22,13 @@ namespace DFC.Composite.Paths.Services
             var pathDocument = await GetPath(path);
             if (pathDocument != null)
             {
-                await _storage.Delete(_database, _collection, pathDocument.DocumentId.ToString());
+                await _storage.Delete(pathDocument.DocumentId.ToString());
             }
         }
 
         public async Task<IEnumerable<PathModel>> GetAll()
         {
-            return await _storage.Search<PathModel>(_database, _collection, null);
+            return await _storage.Search<PathModel>(null);
         }
 
         public async Task<PathModel> Get(string path)
@@ -67,7 +63,7 @@ namespace DFC.Composite.Paths.Services
                 throw new InvalidOperationException(string.Format(Message.PathAlreadyExists, model.Path));
             }
 
-            await _storage.Add<PathModel>(_database, _collection, model);
+            await _storage.Add<PathModel>(model);
 
             return model;
         }
@@ -86,13 +82,13 @@ namespace DFC.Composite.Paths.Services
 
                 Validate(updateModel);
 
-                await _storage.Update<PathModel>(_database, _collection, currentModel.DocumentId.ToString(), updateModel);
+                await _storage.Update<PathModel>(currentModel.DocumentId.ToString(), updateModel);
             }
         }
 
         private async Task<PathModel> GetPath(string path)
         {
-            var documents = await _storage.Search<PathModel>(_database, _collection, x => x.Path == path);
+            var documents = await _storage.Search<PathModel>(x => x.Path == path);
             return documents.FirstOrDefault();
         }
 

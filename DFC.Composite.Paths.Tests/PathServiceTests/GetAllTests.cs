@@ -19,8 +19,8 @@ namespace DFC.Composite.Paths.Tests.PathServiceTests
         [SetUp]
         public void SetUp()
         {
-            _documentStorage = new CosmosDocumentStorage(new CosmosConnectionString(CosmosConnectionString), CosmosPartitionKey);
-            _pathService = new PathService(_documentStorage, CosmosDatabase, _collectionName);
+            _documentStorage = new CosmosDocumentStorage(new CosmosConnectionString(CosmosConnectionString), CosmosPartitionKey, CosmosDatabase, _collectionName);
+            _pathService = new PathService(_documentStorage);
         }
 
         [TearDown]
