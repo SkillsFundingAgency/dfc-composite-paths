@@ -1,7 +1,7 @@
-﻿using DFC.Composite.Paths.Common;
+﻿using System.IO;
+using DFC.Composite.Paths.Common;
 using DFC.Composite.Paths.Models;
 using Microsoft.Extensions.Configuration;
-using System.IO;
 
 namespace DFC.Composite.Paths.Tests.PathServiceTests
 {
@@ -20,17 +20,18 @@ namespace DFC.Composite.Paths.Tests.PathServiceTests
 
             var configurationRoot = builder.Build();
 
-            CosmosConnectionString = configurationRoot[Cosmos.CosmosConnectionString];
-            CosmosDatabase = configurationRoot[Cosmos.CosmosDatabaseId];
-            CosmosPartitionKey = configurationRoot[Cosmos.CosmosPartitionKey];
+            CosmosConnectionString = configurationRoot["Values:" + Cosmos.CosmosConnectionString];
+            CosmosDatabase = configurationRoot["Values:" + Cosmos.CosmosDatabaseId];
+            CosmosPartitionKey = configurationRoot["Values:" + Cosmos.CosmosPartitionKey];
         }
 
         protected PathModel Create(string path, Layout layout)
         {
-            var pathModel = new PathModel();
-
-            pathModel.Path = path;
-            pathModel.Layout = layout;
+            var pathModel = new PathModel
+            {
+                Path = path,
+                Layout = layout
+            };
 
             return pathModel;
         }

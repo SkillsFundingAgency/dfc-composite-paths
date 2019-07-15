@@ -43,10 +43,10 @@ namespace DFC.Composite.Paths
             var cosmosCollectionId = Environment.GetEnvironmentVariable(Cosmos.CosmosCollectionId);
             var cosmosPartitionKey = Environment.GetEnvironmentVariable(Cosmos.CosmosPartitionKey);
 
-            services.AddTransient<IDocumentStorage>(x => new CosmosDocumentStorage(cosmosConnectionString, cosmosPartitionKey));
+            services.AddSingleton<IDocumentStorage>(x => new CosmosDocumentStorage(cosmosConnectionString, cosmosPartitionKey, cosmosDatabaseId, cosmosCollectionId));
             services.AddTransient<IHttpRequestHelper, HttpRequestHelper>();
             services.AddTransient<ILoggerHelper, LoggerHelper>();
-            services.AddScoped<IPathService, PathService>(sp => new PathService(sp.GetService<IDocumentStorage>(), cosmosDatabaseId, cosmosCollectionId));
+            services.AddScoped<IPathService, PathService>(sp => new PathService(sp.GetService<IDocumentStorage>()));
             services.AddTransient<ISwaggerDocumentGenerator, SwaggerDocumentGenerator>();
         }
     }
