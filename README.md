@@ -28,12 +28,11 @@ Once you have cloned the public repo you need to remove the <i>-template</i> par
 
 | Location | Repo Filename | Rename to |
 |-------|-------|-------|
-| DFC.Composite.Paths.Tests | local.settings-template.json | local.settings.json |
 | DFC.Composite.Paths | local.settings-template.json | local.settings.json |
 
 ## Configuring to run locally
 
-The project contains a "local.settings-template.json" for the functions, and a "local.settings-template.json" for the tests. These files contain sample appsettings for the functions and the integration test projects. To use these files, rename them to "local.settings.json" and "appsettings.json" as apprppriate and edit and replace the configuration item values with values suitable for your environment.
+The project contains a "local.settings-template.json" for the functions. These files contain sample appsettings for the functions and the integration test projects. To use these files, rename them to "local.settings.json" and "appsettings.json" as apprppriate and edit and replace the configuration item values with values suitable for your environment.
 
 By default, the appsettings include a local Azure Cosmos Emulator configuration using the well known configuration values. These may be changed to suit your environment if you are not using the Azure Cosmos Emulator. 
 
