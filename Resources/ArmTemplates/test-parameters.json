@@ -37,6 +37,9 @@
         },
         "CosmosDbCollectionName": {
             "value": "a-comsmos-collection"
+        },
+        "ApiTitleSuffix": {
+            "value": "-a-test-suffix"
         }
     }
 }
