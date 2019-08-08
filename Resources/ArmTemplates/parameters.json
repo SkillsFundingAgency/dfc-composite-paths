@@ -49,6 +49,9 @@
         },
         "SharedAppServicePlanResourceGroup": {
             "value": "__CompositeUiSharedResourceGroup__"
+        },
+        "CosmosDbCollectionName": {
+            "value": "__CosmosCollectionId__"
         }
     }
 }
