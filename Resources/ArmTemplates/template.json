@@ -52,6 +52,13 @@
         "SharedAppServicePlanResourceGroup": {
             "type": "string",
             "defaultValue": ""
+        },
+        "CosmosDbCollectionName": {
+            "type": "string",
+            "defaultValue": "paths",
+            "metadata": {
+                "description": "the name of the cosmosdb collection for the microservice to use"
+            }
         }
     },
     "variables": {
@@ -200,7 +207,7 @@
                             },
                             {
                                 "name": "CosmosSettings__CollectionId",
-                                "value": "paths"
+                                "value": "[parameters('CosmosDbCollectionName')]"
                             },
                             {
                                 "name": "CosmosSettings__PartitionKey",
