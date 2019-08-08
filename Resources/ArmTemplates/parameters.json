@@ -52,6 +52,9 @@
         },
         "CosmosDbCollectionName": {
             "value": "__CosmosCollectionId__"
+        },
+        "ApiTitleSuffix": {
+            "value": "__ApiTitleSuffix__"
         }
     }
 }
