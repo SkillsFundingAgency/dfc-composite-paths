@@ -55,7 +55,6 @@
         },
         "CosmosDbCollectionName": {
             "type": "string",
-            "defaultValue": "paths",
             "metadata": {
                 "description": "the name of the cosmosdb collection for the microservice to use"
             }
