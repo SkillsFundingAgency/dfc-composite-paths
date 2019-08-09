@@ -4,12 +4,6 @@
     <AzureFunctionsVersion>v2</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="StartUp.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="StartUp.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="DFC.Common.Standard" Version="0.1.1" />
     <PackageReference Include="DFC.HTTP.Standard" Version="0.1.11" />
     <PackageReference Include="DFC.Swagger.Standard" Version="0.1.11" />
