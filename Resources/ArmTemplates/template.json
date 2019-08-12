@@ -255,7 +255,7 @@
                         "value": false
                     },
                     "partitionKey": {
-                        "value": "/path"
+                        "value": "/Path"
                     }
                 }
             }
