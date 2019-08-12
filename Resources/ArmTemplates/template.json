@@ -230,6 +230,36 @@
             "dependsOn": [
                 "[variables('AppServiceAppInsightsName')]"
             ]
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[parameters('CosmosDbCollectionName')]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('CompositeUiSharedResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'CosmosDb/cosmos-collection.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "accountName": {
+                        "value": "[parameters('CosmosDbAccount')]"
+                    },
+                    "databaseName": {
+                        "value": "composition"
+                    },
+                    "collectionName": {
+                        "value": "[parameters('CosmosDbCollectionName')]"
+                    },
+                    "provisionRequestUnits": {
+                        "value": false
+                    },
+                    "partitionKey": {
+                        "value": "/Path"
+                    }
+                }
+            }
         }
     ],
         "outputs": {}
