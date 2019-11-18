@@ -4,6 +4,9 @@ namespace DFC.Composite.Paths.Common
 {
     public enum Layout
     {
+        [Description("No layout")]
+        None = 0,
+
         [Description("Uses a layout which is full width ")]
         FullWidth = 1,
 

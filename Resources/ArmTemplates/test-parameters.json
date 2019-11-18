@@ -14,11 +14,17 @@
         "ApimServiceName": {
             "value": "dfc-dev-shared-apim"
         },
+        "ApiName": {
+            "value": "paths"
+        },
         "CompositeUiSharedResourceGroup": {
             "value": "dfc-dev-compui-shared-rg"
         },
         "CompositeUiSharedStorageAccountName": {
             "value": "dfcdevcompuisharedstr"
+        },
+        "CosmosDbAccount": {
+            "value": "dfc-dev-compui-shared-cdb"
         },
         "Environment": {
             "value": "FOO"
@@ -28,6 +34,12 @@
         },
         "SharedAppServicePlanResourceGroup": {
             "value": "dfc-dev-compui-shared-rg"
+        },
+        "CosmosDbCollectionName": {
+            "value": "a-comsmos-collection"
+        },
+        "ApiTitleSuffix": {
+            "value": "-a-test-suffix"
         }
     }
 }

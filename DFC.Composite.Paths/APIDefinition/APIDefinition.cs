@@ -1,49 +1,48 @@
 using DFC.Common.Standard.Logging;
+using DFC.Functions.DI.Standard.Attributes;
 using DFC.Swagger.Standard;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
 
 namespace DFC.Composite.Paths.APIDefinition
 {
-    public class APIDefinition
+    public static class ApiDefinition
     {
-        private const string ApiTitle = "Composite Paths";
-        private const string ApiDefinitionName = "API-Definition";
-        private const string ApiDefinitionRoute = ApiTitle + "/" + ApiDefinitionName;
-        private const string ApiDefinitionDescription = "Basic details of a National Careers Service " + ApiTitle + " Resource";
-        private const string ApiVersion = "0.1.0";
+        public const string ApiDefinitionName = "API-Definition";
+        public const string ApiDefRoute = "paths/" + ApiDefinitionName;
+        public const string ApiDescription = "To support the Digital First Careers Composite UI Path definitions.";
 
-        private ISwaggerDocumentGenerator _swaggerDocumentGenerator;
-        private readonly ILogger<APIDefinition> _logger;
-        private ILoggerHelper _loggerHelper;
-
-        public APIDefinition(ISwaggerDocumentGenerator swaggerDocumentGenerator, ILogger<APIDefinition> logger, ILoggerHelper loggerHelper)
-        {
-            _swaggerDocumentGenerator = swaggerDocumentGenerator;
-            _logger = logger;
-            _loggerHelper = loggerHelper;
-        }
+        public const string ApiVersion = "1.0.0";
 
         [FunctionName(ApiDefinitionName)]
-        public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = ApiDefinitionRoute)] HttpRequest req)
+        public static HttpResponseMessage Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = ApiDefRoute)]
+            HttpRequest req,
+            ILogger logger,
+            [Inject] ISwaggerDocumentGenerator swaggerDocumentGenerator,
+            [Inject] ILoggerHelper loggerHelper
+        )
         {
-            _loggerHelper.LogMethodEnter(_logger);
+            string ApiSuffix = Environment.GetEnvironmentVariable("ApiSuffix");
+            string ApiTitle = "Composite Paths " + ApiSuffix;
 
-            var swaggerResponse = _swaggerDocumentGenerator.GenerateSwaggerDocument(
-                req,
-                ApiTitle,
-                ApiDefinitionDescription,
-                ApiDefinitionName,
-                ApiVersion,
-                Assembly.GetExecutingAssembly());
+            loggerHelper.LogMethodEnter(logger);
 
-            _loggerHelper.LogMethodExit(_logger);
+            var swagger = swaggerDocumentGenerator.GenerateSwaggerDocument(req, ApiTitle, ApiDescription, ApiDefinitionName, ApiVersion, Assembly.GetExecutingAssembly());
 
-            return new OkObjectResult(swaggerResponse);
+            loggerHelper.LogMethodExit(logger);
+
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(swagger)
+            };
         }
     }
 }

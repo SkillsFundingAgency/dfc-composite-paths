@@ -16,8 +16,12 @@ namespace DFC.Composite.Paths.Extensions
             body.Value = JsonConvert.DeserializeObject<T>(bodyString);
 
             var results = new List<ValidationResult>();
-            body.IsValid = Validator.TryValidateObject(body.Value, new ValidationContext(body.Value, null, null), results, true);
-            body.ValidationResults = results;
+
+            if (body.Value != null)
+            {
+                body.IsValid = Validator.TryValidateObject(body.Value, new ValidationContext(body.Value, null, null), results, true);
+                body.ValidationResults = results;
+            }
 
             return body;
         }

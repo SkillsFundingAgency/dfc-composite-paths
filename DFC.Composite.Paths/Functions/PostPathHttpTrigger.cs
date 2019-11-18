@@ -2,14 +2,18 @@ using DFC.Common.Standard.Logging;
 using DFC.Composite.Paths.Common;
 using DFC.Composite.Paths.Extensions;
 using DFC.Composite.Paths.Models;
+using DFC.Composite.Paths.Services;
 using DFC.HTTP.Standard;
 using DFC.Swagger.Standard.Annotations;
+using HtmlAgilityPack;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -20,43 +24,60 @@ namespace DFC.Composite.Paths.Functions
         private readonly ILogger<PostPathHttpTrigger> _logger;
         private readonly ILoggerHelper _loggerHelper;
         private readonly IHttpRequestHelper _httpRequestHelper;
+        private readonly IPathService _pathService;
 
-        public PostPathHttpTrigger(ILogger<PostPathHttpTrigger> logger, ILoggerHelper loggerHelper, IHttpRequestHelper httpRequestHelper)
+        public PostPathHttpTrigger(
+            ILogger<PostPathHttpTrigger> logger,
+            ILoggerHelper loggerHelper,
+            IHttpRequestHelper httpRequestHelper,
+            IPathService pathService)
         {
             _logger = logger;
             _loggerHelper = loggerHelper;
             _httpRequestHelper = httpRequestHelper;
+            _pathService = pathService;
         }
 
         [FunctionName("Post")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(PathModel))]
-        [Response(HttpStatusCode = (int)HttpStatusCode.OK, Description = "Path found", ShowSchema = true)]
-        [Response(HttpStatusCode = (int)HttpStatusCode.NoContent, Description = "Path does not exist", ShowSchema = false)]
+        [Response(HttpStatusCode = (int)HttpStatusCode.Created, Description = "Path created", ShowSchema = true)]
         [Response(HttpStatusCode = (int)HttpStatusCode.BadRequest, Description = "Request was malformed", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Unauthorized, Description = "API key is unknown or invalid", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Forbidden, Description = "Insufficient access", ShowSchema = false)]
+        [Response(HttpStatusCode = (int)HttpStatusCode.UnprocessableEntity, Description = "Unprocessable entity", ShowSchema = false)]
         [Display(Name = "Post", Description = "Creates a new resource of type 'Paths'.")]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "paths")] HttpRequest req)
         {
             _loggerHelper.LogMethodEnter(_logger);
 
             var correlationId = _httpRequestHelper.GetOrCreateDssCorrelationId(req);
-            IActionResult result = null;
 
             var body = await req.GetBodyAsync<PathModel>();
-            if (body.IsValid)
+
+            if (body == null || body.Value == null)
             {
-                result = new OkObjectResult(body);
-            }
-            else
-            {
-                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.ValidationFailed);
-                result = new BadRequestObjectResult(body.ValidationResults);
+                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.PayloadMalformed);
+                return new BadRequestResult();
             }
 
-            _loggerHelper.LogMethodExit(_logger);
+            if (!body.IsValid)
+            {
+                _loggerHelper.LogInformationMessage(_logger, correlationId, string.Concat(Message.ValidationFailed, " ", body.ValidationResults));
+                return new BadRequestObjectResult(body.ValidationResults);
+            }
 
-            return result;
+            try
+            {
+                _loggerHelper.LogInformationMessage(_logger, correlationId, "Attempting to register path");
+                var registeredPath = await _pathService.Register(body.Value);
+                _loggerHelper.LogMethodExit(_logger);
+                return new CreatedResult(registeredPath.Path, registeredPath);
+            }
+            catch (Exception ex)
+            {
+                _loggerHelper.LogException(_logger, correlationId, ex);
+                return new UnprocessableEntityObjectResult(ex);
+            }
         }
     }
 }

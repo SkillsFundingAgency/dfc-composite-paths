@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.572
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.Composite.Paths", "DFC.Composite.Paths\DFC.Composite.Paths.csproj", "{BAC79173-4DA9-4D59-9487-1AAD0E4F0815}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.Composite.Paths.Tests", "DFC.Composite.Paths.Tests\DFC.Composite.Paths.Tests.csproj", "{31C7FB1B-7797-4E00-BD2F-83458C58E8D6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{34CF2C4C-65C2-483F-9C92-072B557C798D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{993DF00B-E3C2-44A8-A1D1-AC108A0BA14E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +28,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{31C7FB1B-7797-4E00-BD2F-83458C58E8D6} = {993DF00B-E3C2-44A8-A1D1-AC108A0BA14E}
+		{993DF00B-E3C2-44A8-A1D1-AC108A0BA14E} = {34CF2C4C-65C2-483F-9C92-072B557C798D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ED6B7ADB-A945-4062-9D97-00EBCD526EFF}
