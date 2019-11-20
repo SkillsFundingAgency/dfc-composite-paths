@@ -1,0 +1,11 @@
+{
+    "DatabaseName": "composition",
+    "Collections": [
+      {
+        "CollectionName": "paths",
+        "OfferThroughput": 400,
+        "StoredProcedures": [],
+        "PartitionKey":  "Path"
+      }
+    ]
+  }
