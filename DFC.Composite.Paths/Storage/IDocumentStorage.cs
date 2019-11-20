@@ -47,6 +47,6 @@ namespace DFC.Composite.Paths.Storage
         /// </summary>
         /// <param name="documentId">The id of the document to delete</param>
         /// <returns></returns>
-        Task Delete(string documentId);
+        Task Delete(string documentId, string partitionKey);
     }
 }

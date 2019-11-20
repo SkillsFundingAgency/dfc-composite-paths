@@ -22,7 +22,7 @@ namespace DFC.Composite.Paths.Services
             var pathDocument = await GetPath(path);
             if (pathDocument != null)
             {
-                await _storage.Delete(pathDocument.DocumentId.ToString());
+                await _storage.Delete(pathDocument.DocumentId.ToString(), path);
             }
         }
 

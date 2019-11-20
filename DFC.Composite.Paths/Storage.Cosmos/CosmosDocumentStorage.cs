@@ -92,10 +92,10 @@ namespace DFC.Composite.Paths.Storage.Cosmos
             await _documentClient.ReplaceDocumentAsync(link, document);
         }
 
-        public async Task Delete(string documentId)
+        public async Task Delete(string documentId, string partitionKey)
         {
             var link = UriFactory.CreateDocumentUri(_databaseId, _collectionId, documentId);
-            await _documentClient.DeleteDocumentAsync(link, new RequestOptions() { PartitionKey = new PartitionKey(Undefined.Value) });
+            await _documentClient.DeleteDocumentAsync(link, new RequestOptions() { PartitionKey = new PartitionKey(partitionKey) });
         }
 
         private async Task<DocumentClient> Init(string databaseId, string collectionId)

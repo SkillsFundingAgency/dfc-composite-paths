@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.Composite.Paths", "DFC.Composite.Paths\DFC.Composite.Paths.csproj", "{BAC79173-4DA9-4D59-9487-1AAD0E4F0815}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.Composite.Paths.Tests", "DFC.Composite.Paths.Tests\DFC.Composite.Paths.Tests.csproj", "{31C7FB1B-7797-4E00-BD2F-83458C58E8D6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{34CF2C4C-65C2-483F-9C92-072B557C798D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{993DF00B-E3C2-44A8-A1D1-AC108A0BA14E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTests", "IntegrationTests", "{F18F63AB-6853-4A42-92CA-C8FE92E7F68F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFC.Composite.Paths.IntegrationTests", "DFC.Composite.Paths.IntegrationTests\DFC.Composite.Paths.IntegrationTests.csproj", "{8BF4B98F-F5E4-49E2-B3AC-E6890A2D9804}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,17 +21,17 @@ Global
 		{BAC79173-4DA9-4D59-9487-1AAD0E4F0815}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAC79173-4DA9-4D59-9487-1AAD0E4F0815}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAC79173-4DA9-4D59-9487-1AAD0E4F0815}.Release|Any CPU.Build.0 = Release|Any CPU
-		{31C7FB1B-7797-4E00-BD2F-83458C58E8D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{31C7FB1B-7797-4E00-BD2F-83458C58E8D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{31C7FB1B-7797-4E00-BD2F-83458C58E8D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{31C7FB1B-7797-4E00-BD2F-83458C58E8D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BF4B98F-F5E4-49E2-B3AC-E6890A2D9804}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BF4B98F-F5E4-49E2-B3AC-E6890A2D9804}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BF4B98F-F5E4-49E2-B3AC-E6890A2D9804}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BF4B98F-F5E4-49E2-B3AC-E6890A2D9804}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{31C7FB1B-7797-4E00-BD2F-83458C58E8D6} = {993DF00B-E3C2-44A8-A1D1-AC108A0BA14E}
-		{993DF00B-E3C2-44A8-A1D1-AC108A0BA14E} = {34CF2C4C-65C2-483F-9C92-072B557C798D}
+		{F18F63AB-6853-4A42-92CA-C8FE92E7F68F} = {34CF2C4C-65C2-483F-9C92-072B557C798D}
+		{8BF4B98F-F5E4-49E2-B3AC-E6890A2D9804} = {F18F63AB-6853-4A42-92CA-C8FE92E7F68F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ED6B7ADB-A945-4062-9D97-00EBCD526EFF}
