@@ -9,7 +9,7 @@ using Moq;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DFC.Composite.Paths.IntegrationTests.Functions
+namespace DFC.Composite.Paths.UnitTests.Functions
 {
     [TestFixture]
     public class GetListPathsHttpTriggerTests

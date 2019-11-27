@@ -10,13 +10,13 @@ using Moq;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DFC.Composite.Paths.IntegrationTests.Functions
+namespace DFC.Composite.Paths.UnitTests.Functions
 {
     [TestFixture]
-    public class GetPathHttpTriggerTests
+    public class DeletePathHttpTriggerTests
     {
-        private GetPathHttpTrigger _function;
-        private Mock<ILogger<GetPathHttpTrigger>> _logger;
+        private DeletePathHttpTrigger _function;
+        private Mock<ILogger<DeletePathHttpTrigger>> _logger;
         private Mock<ILoggerHelper> _loggerHelper;
         private Mock<IHttpRequestHelper> _requestHelper;
         private Mock<IPathService> _pathService;
@@ -24,12 +24,12 @@ namespace DFC.Composite.Paths.IntegrationTests.Functions
         [SetUp]
         public void SetUp()
         {
-            _logger = new Mock<ILogger<GetPathHttpTrigger>>();
+            _logger = new Mock<ILogger<DeletePathHttpTrigger>>();
             _loggerHelper = new Mock<ILoggerHelper>();
             _requestHelper = new Mock<IHttpRequestHelper>();
             _pathService = new Mock<IPathService>();
 
-            _function = new GetPathHttpTrigger(_logger.Object, _loggerHelper.Object, _requestHelper.Object, _pathService.Object);
+            _function = new DeletePathHttpTrigger(_logger.Object, _loggerHelper.Object, _requestHelper.Object, _pathService.Object);
         }
 
         [TestCase("")]
@@ -41,23 +41,19 @@ namespace DFC.Composite.Paths.IntegrationTests.Functions
             Assert.IsInstanceOf<BadRequestResult>(result);
         }
 
-        [Test]
-        public async Task Produces_OkObjectResult_When_PathIsValid()
+        [TestCase("path1")]
+        public async Task Produces_OKContentResult_When_PathIsValid(string path)
         {
-            var path = "path1";
-            var pathModel = new PathModel() { Path = path, TopNavigationText = "tnt1" };
+            var pathModel = new PathModel() { Path = path };
             _pathService.Setup(x => x.Get(path)).ReturnsAsync(pathModel);
 
             var result = await _function.Run(CreateHttpRequest(), path);
 
-            var typedActionResultResult = As<OkObjectResult>(result);
-            var typedValue = typedActionResultResult.Value as PathModel;
-            Assert.IsInstanceOf<OkObjectResult>(result);
-            Assert.AreEqual(pathModel.TopNavigationText, typedValue.TopNavigationText);
+            Assert.IsInstanceOf<OkResult>(result);
         }
 
         [Test]
-        public async Task ProducesNoContentResult_When_PathDoesNotExist()
+        public async Task Produces_NotFoundResult_When_PathDoesNotExist()
         {
             var path = "path1";
             PathModel pathModel = null;
@@ -71,11 +67,6 @@ namespace DFC.Composite.Paths.IntegrationTests.Functions
         private HttpRequest CreateHttpRequest()
         {
             return null;
-        }
-
-        private T As<T>(IActionResult actionResult)
-        {
-            return (T)actionResult;
         }
     }
 }

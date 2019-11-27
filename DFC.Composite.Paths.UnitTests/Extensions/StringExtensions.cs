@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace DFC.Composite.Paths.IntegrationTests.Extensions
+namespace DFC.Composite.Paths.UnitTests.Extensions
 {
     public static class StringExtensions
     {
