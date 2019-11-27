@@ -3,7 +3,7 @@ using DFC.Composite.Paths.Common;
 using DFC.Composite.Paths.Functions;
 using DFC.Composite.Paths.Models;
 using DFC.Composite.Paths.Services;
-using DFC.Composite.Paths.IntegrationTests.Extensions;
+using DFC.Composite.Paths.UnitTests.Extensions;
 using DFC.HTTP.Standard;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
