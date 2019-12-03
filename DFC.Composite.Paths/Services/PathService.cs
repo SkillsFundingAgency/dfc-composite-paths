@@ -19,6 +19,7 @@ namespace DFC.Composite.Paths.Services
 
         public async Task Delete(string path)
         {
+            path = path.ToLower();
             var pathDocument = await GetPath(path);
             if (pathDocument != null)
             {
@@ -62,6 +63,7 @@ namespace DFC.Composite.Paths.Services
             {
                 throw new InvalidOperationException(string.Format(Message.PathAlreadyExists, model.Path));
             }
+            model.Path = model.Path.ToLower();
 
             await _storage.Add<PathModel>(model);
 
@@ -88,7 +90,7 @@ namespace DFC.Composite.Paths.Services
 
         private async Task<PathModel> GetPath(string path)
         {
-            var documents = await _storage.Search<PathModel>(x => x.Path == path);
+            var documents = await _storage.Search<PathModel>(x => x.Path.ToLower() == path.ToLower());
             return documents.FirstOrDefault();
         }
 
