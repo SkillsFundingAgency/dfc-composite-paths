@@ -9,7 +9,6 @@ using DFC.Swagger.Standard;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
 
 [assembly: WebJobsStartup(typeof(DFC.Composite.Paths.Startup.WebJobsExtensionStartup), "Web Jobs Extension Startup")]
