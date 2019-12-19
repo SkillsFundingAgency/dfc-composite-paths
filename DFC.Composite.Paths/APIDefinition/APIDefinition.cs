@@ -6,12 +6,14 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
 
 namespace DFC.Composite.Paths.APIDefinition
 {
+    [ExcludeFromCodeCoverage]
     public static class ApiDefinition
     {
         public const string ApiDefinitionName = "API-Definition";
