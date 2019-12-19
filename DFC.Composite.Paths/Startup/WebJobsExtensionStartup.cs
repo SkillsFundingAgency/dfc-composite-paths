@@ -10,11 +10,13 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 [assembly: WebJobsStartup(typeof(DFC.Composite.Paths.Startup.WebJobsExtensionStartup), "Web Jobs Extension Startup")]
 
 namespace DFC.Composite.Paths.Startup
 {
+    [ExcludeFromCodeCoverage]
     public class WebJobsExtensionStartup : IWebJobsStartup
     {
         public void Configure(IWebJobsBuilder builder)
