@@ -1,6 +1,6 @@
 ﻿namespace DFC.Composite.Paths.Common
 {
-    public class Cosmos
+    public static class Cosmos
     {
         public const string CosmosConnectionString = "CosmosSettings__ConnectionString";
         public const string CosmosDatabaseId = "CosmosSettings__DatabaseId";
