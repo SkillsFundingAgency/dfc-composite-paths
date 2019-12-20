@@ -101,7 +101,7 @@ namespace DFC.Composite.Paths.Models
 
                 if (htmlDoc.ParseErrors.Any())
                 {
-                    result.Add(new ValidationResult(string.Format(Message.MalformedHtml, nameof(PhaseBannerHtml), new string[] { nameof(PhaseBannerHtml) })));
+                    result.Add(new ValidationResult(string.Format(Message.MalformedHtml, nameof(PhaseBannerHtml))));
                 }
             }
 
