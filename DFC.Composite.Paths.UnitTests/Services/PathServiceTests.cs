@@ -73,7 +73,7 @@ namespace DFC.Composite.Paths.UnitTests.Services
         }
 
         [Test]
-        public async Task CallingRegister_OnExistingPathFails()
+        public void CallingRegister_OnExistingPathFails()
         {
             var newPathModel1 = new PathModel() { Path = path, Layout = Layout.SidebarLeft };
             var pathModels = new List<PathModel>() { newPathModel1 };
@@ -83,7 +83,7 @@ namespace DFC.Composite.Paths.UnitTests.Services
         }
 
         [Test]
-        public async Task CallingRegister_ThrowsExceptionWhenExternalUrlIsSetAndLayoutIsNotNone()
+        public void CallingRegister_ThrowsExceptionWhenExternalUrlIsSetAndLayoutIsNotNone()
         {
             var newPathModel1 = new PathModel()
             {
@@ -99,7 +99,7 @@ namespace DFC.Composite.Paths.UnitTests.Services
         }
 
         [Test]
-        public async Task CallingRegister_ThrowsExceptionWhenExternalUrlIsNotSetAndLayoutIsNone()
+        public void CallingRegister_ThrowsExceptionWhenExternalUrlIsNotSetAndLayoutIsNone()
         {
             var newPathModel1 = new PathModel()
             {
@@ -124,7 +124,6 @@ namespace DFC.Composite.Paths.UnitTests.Services
 
             documentStorage.Verify(x => x.Update<PathModel>(pathModel1.DocumentId.ToString(), pathModel1), Times.Once());
         }
-
 
         private List<PathModel> GetPathModels()
         {
