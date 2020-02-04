@@ -2,6 +2,7 @@ using DFC.Common.Standard.Logging;
 using DFC.Composite.Paths.Common;
 using DFC.Composite.Paths.Extensions;
 using DFC.Composite.Paths.Models;
+using DFC.Composite.Paths.Services;
 using DFC.HTTP.Standard;
 using DFC.Swagger.Standard.Annotations;
 using Microsoft.AspNetCore.Http;
@@ -20,12 +21,18 @@ namespace DFC.Composite.Paths.Functions
         private readonly ILogger<GetPathHttpTrigger> _logger;
         private readonly ILoggerHelper _loggerHelper;
         private readonly IHttpRequestHelper _httpRequestHelper;
+        private readonly IPathService _pathService;
 
-        public GetPathHttpTrigger(ILogger<GetPathHttpTrigger> logger, ILoggerHelper loggerHelper, IHttpRequestHelper httpRequestHelper)
+        public GetPathHttpTrigger(
+            ILogger<GetPathHttpTrigger> logger,
+            ILoggerHelper loggerHelper,
+            IHttpRequestHelper httpRequestHelper,
+            IPathService pathService)
         {
             _logger = logger;
             _loggerHelper = loggerHelper;
             _httpRequestHelper = httpRequestHelper;
+            _pathService = pathService;
         }
 
         [FunctionName("GetById")]
@@ -50,11 +57,18 @@ namespace DFC.Composite.Paths.Functions
                 return new BadRequestResult();
             }
 
-            await Task.CompletedTask;
+            _loggerHelper.LogInformationMessage(_logger, correlationId, $"Attempting to get path {path}");
+            var pathModel = await _pathService.Get(path);
+
+            if (pathModel == null)
+            {
+                _loggerHelper.LogInformationMessage(_logger, correlationId, Message.PathDoesNotExist);
+                return new NoContentResult();
+            }
 
             _loggerHelper.LogMethodExit(_logger);
 
-            return new OkObjectResult(new PathModel());
+            return new OkObjectResult(pathModel);
         }
     }
 }

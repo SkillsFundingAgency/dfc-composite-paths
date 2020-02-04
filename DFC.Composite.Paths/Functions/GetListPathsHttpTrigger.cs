@@ -1,4 +1,7 @@
 using DFC.Common.Standard.Logging;
+using DFC.Composite.Paths.Extensions;
+using DFC.Composite.Paths.Services;
+using DFC.HTTP.Standard;
 using DFC.Swagger.Standard.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,16 +18,23 @@ namespace DFC.Composite.Paths.Functions
     {
         private readonly ILogger<GetListPathsHttpTrigger> _logger;
         private readonly ILoggerHelper _loggerHelper;
+        private readonly IHttpRequestHelper _httpRequestHelper;
+        private readonly IPathService _pathService;
 
-        public GetListPathsHttpTrigger(ILogger<GetListPathsHttpTrigger> logger, ILoggerHelper loggerHelper)
+        public GetListPathsHttpTrigger(
+            ILogger<GetListPathsHttpTrigger> logger,
+            ILoggerHelper loggerHelper,
+            IHttpRequestHelper httpRequestHelper,
+            IPathService pathService)
         {
             _logger = logger;
             _loggerHelper = loggerHelper;
+            _httpRequestHelper = httpRequestHelper;
+            _pathService = pathService;
         }
 
         [FunctionName("Get")]
         [Response(HttpStatusCode = (int)HttpStatusCode.OK, Description = "Path found", ShowSchema = true)]
-        [Response(HttpStatusCode = (int)HttpStatusCode.NoContent, Description = "Path does not exist", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Unauthorized, Description = "API key is unknown or invalid", ShowSchema = false)]
         [Response(HttpStatusCode = (int)HttpStatusCode.Forbidden, Description = "Insufficient access", ShowSchema = false)]
         [Display(Name = "Get", Description = "Retrieves a list off all registered applications paths.")]
@@ -32,11 +42,13 @@ namespace DFC.Composite.Paths.Functions
         {
             _loggerHelper.LogMethodEnter(_logger);
 
-            await Task.CompletedTask;
+            var correlationId = _httpRequestHelper.GetOrCreateDssCorrelationId(req);
+            _loggerHelper.LogInformationMessage(_logger, correlationId, $"Attempting to get all paths");
+            var result = await _pathService.GetAll();
 
             _loggerHelper.LogMethodExit(_logger);
 
-            return new OkResult();
+            return new OkObjectResult(result);
         }
     }
 }
