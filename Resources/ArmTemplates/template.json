@@ -65,6 +65,12 @@
             "metadata": {
                 "description": "the name of the cosmosdb collection for the microservice to use"
             }
+        },
+        "enableAlerts": {
+            "type": "bool",
+            "metadata": {
+                "description": "Enable or disable alerting"
+            }
         }
     },
     "variables": {
@@ -75,7 +81,6 @@
         "BuildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
         "FunctionAppName": "[concat(variables('ResourcePrefix'), '-fa')]",
         "ResourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-compui-paths'))]",
-        "EnableAlerts": "[contains(createArray('PP', 'PRD'), toUpper(parameters('Environment')))]",
         "ActionGroupName": "[concat('dfc-', replace(tolower(parameters('Environment')), '-draft', ''), '-compui-shared-actgrp')]"
     },
     "resources": [
@@ -278,7 +283,7 @@
                 },
                 "parameters": {
                     "enabled": {
-                        "value": "[variables('EnableAlerts')]"
+                        "value": "[parameters('enableAlerts')]"
                     },
                     "alertName": {
                         "value": "[concat(variables('AppServiceAppInsightsName'), '-metric-exceptions')]"
@@ -334,7 +339,7 @@
                         "value": "[concat(variables('AppServiceAppInsightsName'), '-failure-anomaly-v2')]"
                     },
                     "enabled": {
-                        "value": "[variables('EnableAlerts')]"
+                        "value": "[parameters('enableAlerts')]"
                     },
                     "resourceId": {
                         "value": "[resourceId('Microsoft.Insights/Components', variables('AppServiceAppInsightsName'))]"
