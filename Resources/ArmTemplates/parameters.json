@@ -55,6 +55,9 @@
         },
         "ApiTitleSuffix": {
             "value": "__ApiTitleSuffix__"
+        },
+        "enableAlerts": {
+            "value": __EnableAzureMonitorAlerting__
         }
     }
 }
