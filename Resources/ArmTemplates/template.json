@@ -76,7 +76,7 @@
         "FunctionAppName": "[concat(variables('ResourcePrefix'), '-fa')]",
         "ResourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-compui-paths'))]",
         "EnableAlerts": "[contains(createArray('PP', 'PRD'), toUpper(parameters('Environment')))]",
-        "ActionGroupName": "[tolower(concat('dfc-', parameters('Environment'), '-compui-shared-actgrp'))]"
+        "ActionGroupName": "[concat('dfc-', replace(tolower(parameters('Environment')), '-draft', ''), '-compui-shared-actgrp')]"
     },
     "resources": [
         {
