@@ -7,7 +7,7 @@
   <ItemGroup>
     <PackageReference Include="DFC.Common.Standard" Version="0.1.4" />
     <PackageReference Include="DFC.HTTP.Standard" Version="0.1.11" />
-    <PackageReference Include="DFC.Swagger.Standard" Version="0.1.16" />
+    <PackageReference Include="DFC.Swagger.Standard" Version="0.1.17" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.22" />
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.2" />
