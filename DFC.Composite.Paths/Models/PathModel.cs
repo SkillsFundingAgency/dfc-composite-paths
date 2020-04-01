@@ -39,7 +39,7 @@ namespace DFC.Composite.Paths.Models
         public Layout Layout { get; set; }
 
         [Display(Description = "Indicator stating that the application is online and ready to use.")]
-        [Example(Description = "true or false")]
+        [Example(Description = "true")]
         public bool IsOnline { get; set; }
 
         [Display(Description = "If the application is marked as offline (IsOnline = false) then this text is displayed on any application path (or child path).")]
@@ -63,11 +63,9 @@ namespace DFC.Composite.Paths.Models
         public string RobotsURL { get; set; }
 
         [Display(Description = "UTC date and time the application was registered. This is auto generated.")]
-        [Example(Description = "10:15:06 UTC")]
         public DateTime DateOfRegistration { get; set; }
 
         [Display(Description = "UTC date and time of when the application was last updated. This is auto generated.")]
-        [Example(Description = "10:15:06 UTC")]
         public DateTime LastModifiedDate { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

@@ -65,6 +65,12 @@
             "metadata": {
                 "description": "the name of the cosmosdb collection for the microservice to use"
             }
+        },
+        "enableAlerts": {
+            "type": "bool",
+            "metadata": {
+                "description": "Enable or disable alerting"
+            }
         }
     },
     "variables": {
@@ -74,7 +80,8 @@
         "AppServicePlanResourceGroup": "[if(greater(length(parameters('SharedAppServicePlanResourceGroup')), 0), parameters('SharedAppServicePlanResourceGroup'), resourceGroup().name)]",
         "BuildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
         "FunctionAppName": "[concat(variables('ResourcePrefix'), '-fa')]",
-        "ResourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-compui-paths'))]"
+        "ResourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-compui-paths'))]",
+        "ActionGroupName": "[concat('dfc-', replace(tolower(parameters('Environment')), '-draft', ''), '-compui-shared-actgrp')]"
     },
     "resources": [
         {
@@ -166,7 +173,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'app-service.json')]",
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'app-service-staging.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -182,14 +189,11 @@
                     "appServiceType": {
                         "value": "functionapp"
                     },
-                    "deployStagingSlot": {
-                        "value": false
-                    },
                     "appServiceAppSettings": {
                         "value": [
                             {
                                 "name": "FUNCTIONS_EXTENSION_VERSION",
-                                "value": "~2"
+                                "value": "~3"
                             },
                             {
                                 "name": "MSDEPLOY_RENAME_LOCKED_FILES",
@@ -257,6 +261,88 @@
                     },
                     "partitionKey": {
                         "value": "/Path"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2019-05-01",
+            "name": "[concat(variables('AppServiceAppInsightsName'), '-metric-exceptions')]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[variables('AppServiceAppInsightsName')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/metric-alerts.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "enabled": {
+                        "value": "[parameters('enableAlerts')]"
+                    },
+                    "alertName": {
+                        "value": "[concat(variables('AppServiceAppInsightsName'), '-metric-exceptions')]"
+                    },
+                    "alertSeverity": {
+                        "value": 3
+                    },
+                    "metricName": {
+                        "value": "exceptions/count"
+                    },
+                    "operator": {
+                        "value": "GreaterThan"
+                    },
+                    "threshold": {
+                        "value": "0"
+                    },
+                    "aggregation": {
+                        "value": "Count"
+                    },
+                    "windowSize": {
+                        "value": "PT5M"
+                    },
+                    "evaluationFrequency": {
+                        "value": "PT1M"
+                    },
+                    "actionGroupName": {
+                        "value": "[variables('ActionGroupName')]"
+                    },
+                    "actionGroupResourceGroup": {
+                        "value": "[parameters('CompositeUiSharedResourceGroup')]"
+                    },
+                    "resourceId": {
+                        "value": "[resourceId('Microsoft.Insights/Components', variables('AppServiceAppInsightsName'))]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2019-05-01",
+            "name": "[concat(variables('AppServiceAppInsightsName'), '-failure-anomaly-v2')]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[variables('AppServiceAppInsightsName')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/failure-anomaly-rule.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "alertName": {
+                        "value": "[concat(variables('AppServiceAppInsightsName'), '-failure-anomaly-v2')]"
+                    },
+                    "enabled": {
+                        "value": "[parameters('enableAlerts')]"
+                    },
+                    "resourceId": {
+                        "value": "[resourceId('Microsoft.Insights/Components', variables('AppServiceAppInsightsName'))]"
+                    },
+                    "actionGroupId": {
+                        "value": "[resourceId(parameters('CompositeUiSharedResourceGroup'), 'microsoft.insights/actionGroups', variables('ActionGroupName'))]"
                     }
                 }
             }
