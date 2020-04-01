@@ -14,7 +14,10 @@ namespace DFC.Composite.Paths.Common
         SidebarRight = 2,
 
         [Description("Uses a layout where the sidebar is located on the left")]
-        SidebarLeft = 3
+        SidebarLeft = 3,
+
+        [Description("Uses a layout which is full width but has no main div tag")]
+        FullWidthNoMain = 4 
     }
 
     public enum PageRegion
