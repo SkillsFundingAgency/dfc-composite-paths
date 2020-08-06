@@ -17,7 +17,7 @@
         "ApiName": {
             "type": "string"
         },
-        "ApiTitleSuffix" : {
+        "ApiTitleSuffix": {
             "type": "string",
             "defaultValue": "",
             "metadata": {
@@ -71,6 +71,9 @@
             "metadata": {
                 "description": "Enable or disable alerting"
             }
+        },
+        "ExceptionCountThreshold": {
+            "type": "string"
         }
     },
     "variables": {
@@ -173,7 +176,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'app-service-staging.json')]",
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'app-service.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -188,6 +191,12 @@
                     },
                     "appServiceType": {
                         "value": "functionapp"
+                    },
+                    "deployStagingSlot": {
+                        "value": true
+                    },
+                    "clientAffinity": {
+                        "value": true
                     },
                     "appServiceAppSettings": {
                         "value": [
@@ -295,7 +304,7 @@
                         "value": "GreaterThan"
                     },
                     "threshold": {
-                        "value": "0"
+                        "value": "[parameters('ExceptionCountThreshold')]"
                     },
                     "aggregation": {
                         "value": "Count"
@@ -348,5 +357,5 @@
             }
         }
     ],
-        "outputs": {}
-    }
+    "outputs": {}
+}
