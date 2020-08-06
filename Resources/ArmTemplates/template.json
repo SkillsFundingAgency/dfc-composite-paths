@@ -176,7 +176,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'app-service-staging.json')]",
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'app-service.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
