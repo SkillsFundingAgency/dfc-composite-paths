@@ -2,6 +2,6 @@
 {
     public static class RegularExpressions
     {
-        public const string Path = "^[A-Za-z0-9.,-_]*$";
+        public const string Path = @"^[a-zA-Z0-9](\w|[.,\/\-])*[a-zA-Z0-9]$";
     }
 }
