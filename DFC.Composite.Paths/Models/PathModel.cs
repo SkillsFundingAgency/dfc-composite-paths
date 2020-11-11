@@ -68,6 +68,10 @@ namespace DFC.Composite.Paths.Models
         [Display(Description = "UTC date and time of when the application was last updated. This is auto generated.")]
         public DateTime LastModifiedDate { get; set; }
 
+        public Dictionary<string, string> JavaScriptNames { get; set; }
+
+        public Dictionary<string, string> CssScriptNames { get; set; }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var result = new List<ValidationResult>();
